@@ -7,7 +7,6 @@ import MainScreen from './tabs/MainScreen';
 
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
-fhjsdufjsdoi
 export default class App extends React.Component {
     static navigationOptions = {
         title: "Home",
