@@ -59,6 +59,10 @@
 	<string>Give ReactNativeStormpath periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Allow ReactNativeStormpath to access your reminders</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
