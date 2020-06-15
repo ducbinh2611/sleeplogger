@@ -5,7 +5,7 @@ import ChoiceButton from '../component/ChoiceButton';
 import DiaryContainerMorning from '../container/DiaryContainerMorning';
 import DiaryContainerNight from '../container/DiaryContainerNight';
 import { TabNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 export default class FirstScreen extends React.Component {
     static navigationOptions = {
@@ -18,7 +18,7 @@ export default class FirstScreen extends React.Component {
             // >
 
             // </Image>
-            <Icon name={'ios-home'} size={20}/>
+            <Icon name={'book'} size={26}/>
 
 
         )    

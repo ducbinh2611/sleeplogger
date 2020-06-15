@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FirstScreen from './FirstScreen';
 import SecondScreen from './SecondScreen';
 import TargetScreen from './TargetScreen';
+import TipScreen from './TipScreen';
 import { TabNavigator } from 'react-navigation';
 import moment from 'moment';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 var MainScreen = TabNavigator({
     Diary: { screen: FirstScreen },
     Target: { screen: TargetScreen },
+    Tip: { screen: TipScreen},
     Data: { screen: SecondScreen },
 }, {
     tabBarPosition: 'bottom',
