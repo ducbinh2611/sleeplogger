@@ -1,15 +1,16 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 class TipScreen extends React.Component {
-    static navigationOptions= {
-        tabBarIcon: ({color}) => (
-            <Icon name ={'like2'} size={20} />
+    static navigationOptions = {
+        tabBarIcon: ({ color }) => (
+            <Icon name={'like2'} size={20} />
         )
     }
 
-    state= {
+    state = {
         message: 'This is a test for the tip message being displayedadasdasdgasyudfgasyudfgayudfasytdfvasytdfastydcasytfdytasfdasytfdtyasfy',
         source: 'source',
     }
@@ -17,34 +18,38 @@ class TipScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Icon name={'aliwangwang-o1'} size={30} />
-                    <Text style={styles.textHeader}> Do you know? </Text>
-                </View>
 
-                <View style={styles.tipBox}>
-                    <Text style={styles.textTip}>
-                        {this.state.message}
-                    </Text>
-
-                    <View style={{  marginTop: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Text style={styles.textSource}>
-                            - {this.state.source}
-                        </Text>
-
-                        <TouchableOpacity 
-                            style={styles.saveButton}
-                            onPress={() => null}
-                        >
-                            <Text style={styles.saveButtonText}>
-                                Find it useful? Save it to your tips bank
-                            </Text>
-                        </TouchableOpacity>
+            
+                <LinearGradient style={{flex : 1}} colors={['#090E2C', '#5220AE']}>
+                    <View style={styles.header}>
+                        <Icon name={'aliwangwang-o1'} color={'orange'} size={30} />
+                        <Text style={styles.textHeader}> Do you know? </Text>
                     </View>
 
-                </View>
-            </View>
+                    <View style={styles.tipBox}>
+                        <Text style={styles.textTip}>
+                            {this.state.message}
+                        </Text>
+
+                        <View style={{ marginTop: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
+                            <Text style={styles.textSource}>
+                                - {this.state.source} -
+                        </Text>
+
+                            <TouchableOpacity
+                                style={styles.saveButton}
+                                onPress={() => null}
+                            >
+                                <Text style={styles.saveButtonText}>
+                                    Find it useful? Save it to your tips bank
+                            </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </LinearGradient>
+            
+
         )
     }
 }
@@ -54,8 +59,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
-    }, 
+        justifyContent: 'center',
+        height:500,
+    },
     header: {
         alignItems: 'center',
         justifyContent: 'center',

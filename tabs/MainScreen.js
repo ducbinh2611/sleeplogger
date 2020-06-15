@@ -84,7 +84,16 @@ var MainScreen = TabNavigator({
 const date = moment(new Date()).format('MMMM Do YYYY');
 
 MainScreen.navigationOptions = {
-    title: date
+    title: date,
+    headerLeft: null,
+    headerTitleStyle: {
+        color: 'white'
+    },
+    headerStyle: {
+        backgroundColor: '#090E2C'
+    },
+    //header: null,
+    //headerMode: 'none'
 };
 
 

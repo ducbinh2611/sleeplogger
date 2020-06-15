@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Feather';
 class DiaryContainerMorning extends React.Component {
     static navigationOptions = {
         tabBarLabel: 'Morning',
-        tabBarIcon: ({color}) => (
+        tabBarIcon: ({ color }) => (
             <Icon name='sun' color={'yellow'} size={20} />
         )
     }
@@ -71,7 +71,7 @@ class DiaryContainerMorning extends React.Component {
                 }
 
             })
-            
+
         }
         )
         console.warn('bed time ' + this.state.sleptTime)
@@ -84,65 +84,65 @@ class DiaryContainerMorning extends React.Component {
         const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
 
         return (
-            //<LinearGradient colors={['#0C0525', '#2C1091']}>
-            <ScrollView>
-                <View style={styles.container}>
-                    <TimePicker
-                        style={styles.question}
-                        onChange={time => this.handleChangeSleepTime(time)}
-                        question={'Last night you slept at'}
-                    />
+            <LinearGradient colors={['#090E2C', '#5220AE']}>
+                <ScrollView>
+                    <View style={styles.container}>
+                        <TimePicker
+                            style={styles.question}
+                            onChange={time => this.handleChangeSleepTime(time)}
+                            question={'Last night you slept at'}
+                        />
 
-                    <TimePicker
-                        style={styles.question}
-                        onChange={time => this.handleChangeWakeUpTime(time)}
-                        question={'Today you wake up at'}
-                    />
+                        <TimePicker
+                            style={styles.question}
+                            onChange={time => this.handleChangeWakeUpTime(time)}
+                            question={'Today you woke up at'}
+                        />
 
-                    <Question
-                        style={styles.question}
-                        question={'How was your sleep?'}>
-                        <ChoiceButton path={require('../images/sad.png')}
+                        <Question
+                            style={styles.question}
+                            question={'How was your sleep?'}>
+                            <ChoiceButton path={require('../images/sad.png')}
 
-                            onPress={() => this.handleButtonQ1(1)}> </ChoiceButton>
-                        <ChoiceButton path={require('../images/neutral_face.png')}
-                            onPress={() => this.handleButtonQ1(2)}> </ChoiceButton>
-                        <ChoiceButton path={require('../images/happy_face.png')}
-                            onPress={() => this.handleButtonQ1(3)}> </ChoiceButton>
-                    </Question>
+                                onPress={() => this.handleButtonQ1(1)}> </ChoiceButton>
+                            <ChoiceButton path={require('../images/neutral_face.png')}
+                                onPress={() => this.handleButtonQ1(2)}> </ChoiceButton>
+                            <ChoiceButton path={require('../images/happy_face.png')}
+                                onPress={() => this.handleButtonQ1(3)}> </ChoiceButton>
+                        </Question>
 
-                    <Question
-                        style={styles.question}
-                        question={'How do you feel now?'}>
-                        <ChoiceButton path={require('../images/sad.png')}
-                            onPress={() => this.handleButtonQ2(1)}> </ChoiceButton>
-                        <ChoiceButton path={require('../images/neutral_face.png')}
-                            onPress={() => this.handleButtonQ2(2)}> </ChoiceButton>
-                        <ChoiceButton path={require('../images/happy_face.png')}
-                            onPress={() => this.handleButtonQ2(3)}> </ChoiceButton>
-                    </Question>
+                        <Question
+                            style={styles.question}
+                            question={'How do you feel now?'}>
+                            <ChoiceButton path={require('../images/sad.png')}
+                                onPress={() => this.handleButtonQ2(1)}> </ChoiceButton>
+                            <ChoiceButton path={require('../images/neutral_face.png')}
+                                onPress={() => this.handleButtonQ2(2)}> </ChoiceButton>
+                            <ChoiceButton path={require('../images/happy_face.png')}
+                                onPress={() => this.handleButtonQ2(3)}> </ChoiceButton>
+                        </Question>
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => {
-                                if (sleptTime && wakeUpTime && ease_of_sleep && morning_feeling) {
-                                    this.handleSubmitButton()
-                                } else {
-                                    alert("Key in all data first")
-                                }
-                            }}
-                        >
-                            <Text style={styles.textInput}>
-                                Submit
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => {
+                                    if (sleptTime && wakeUpTime && ease_of_sleep && morning_feeling) {
+                                        this.handleSubmitButton()
+                                    } else {
+                                        alert("Key in all data first")
+                                    }
+                                }}
+                            >
+                                <Text style={styles.textInput}>
+                                    Submit
                         </Text>
 
-                        </TouchableOpacity>
-                    </View>
+                            </TouchableOpacity>
+                        </View>
 
-                </View>
-            </ScrollView>
-            //</LinearGradient>
+                    </View>
+                </ScrollView>
+            </LinearGradient>
 
         )
     }
@@ -150,7 +150,7 @@ class DiaryContainerMorning extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#291D54',
+        //backgroundColor: '#291D54',
 
         flex: 1,
         alignItems: 'center',

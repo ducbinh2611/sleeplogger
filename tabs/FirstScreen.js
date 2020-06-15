@@ -73,7 +73,7 @@ var MainScreen = TabNavigator({
             padding: 5,
         },
         style: {
-            backgroundColor: '#291D54',
+            backgroundColor: '#090E2C',
             //position: 'absolute',
             //borderTopRightRadius: 20,
             //borderTopLeftRadius: 20,
