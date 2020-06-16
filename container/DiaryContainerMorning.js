@@ -53,6 +53,29 @@ class DiaryContainerMorning extends React.Component {
         })
     }
 
+    calcDate = () => {
+        const sleptHour = this.state.sleptTime.getHours()
+        //console.warn('slept hour ' + sleptHour)
+        if (sleptHour > 12) {
+            const timeInAmPm = sleptHour - 12
+            const min = this.state.sleptTime.getMinutes()
+            const nightMins = (timeInAmPm * 60) + min
+            const limit = 12 * 60
+            const wakeUpHrs = this.state.wakeUpTime.getHours()
+            const wakeUpMins = this.state.wakeUpTime.getMinutes()
+            const morningMins = (wakeUpHrs * 60) + wakeUpMins
+            return Math.round((morningMins + (limit - nightMins)) / 60)
+        } else {
+            return Math.round(
+                Math.abs(this.state.wakeUpTime.getTime() - this.state.sleptTime.getTime()) / (1000 * 60 * 60))
+        }
+    }
+
+    testFn = () => {
+        //console.warn(this.state.sleptTime.getTime())
+        return this.calcDate()
+    }
+
     handleSubmitButton = () => {
 
         fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
@@ -66,7 +89,7 @@ class DiaryContainerMorning extends React.Component {
                     bed_time: this.state.sleptTime,
                     wake_up_time: this.state.wakeUpTime,
                     ease_of_sleep: this.state.ease_of_sleep,
-                    hours_of_sleep: 8,
+                    hours_of_sleep: this.calcDate(),
                     morning_feeling: this.state.morning_feeling,
                 }
 
