@@ -15,6 +15,13 @@ class TipScreen extends React.Component {
         source: 'source',
     }
 
+    componentDidMount = () => {
+
+    }
+
+    handleSaveButton = () => {
+        fetch()
+    }
 
     render() {
         return (

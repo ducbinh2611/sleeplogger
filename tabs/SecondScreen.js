@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Button, Image, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, Button, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   LineChart,
   BarChart,
@@ -9,6 +9,10 @@ import {
   StackedBarChart
 } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ChoiceButton from '../component/ChoiceButton';
+import { StackNavigator } from 'react-navigation';
+import DataScreen from './DataScreen';
+import SavedTipScreen from './SavedTipScreen';
 
 const linedata = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -28,11 +32,33 @@ export default class SecondScreen extends React.Component {
     )
   }
 
+  state = {
+    sad: false,
+    neutral: false,
+    happy: false,
+  }
+
+  handleSadButton = () => {
+    this.setState({
+      sad: !this.state.sad
+    })
+  }
+
+  handleNeutralButton = () => {
+    this.setState({
+      neutral: !this.state.neutral
+    })
+  }
+
+  handleHappyButton = () => {
+    this.setState({
+      happy: !this.state.happy
+    })
+  }
   render() {
+    
     return (
-      <View style={styles.container}>
-        <Text> Data </Text>
-      </View>
+      <NavigationPage/>
     )
   }
 }
@@ -40,16 +66,54 @@ export default class SecondScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    //justifyContent: 'center',
+    //alignItems: 'center',
   },
   image: {
     width: 22,
     height: 22,
     color: 'white',
   },
+  headerText: {
+    marginTop: 60,
+    fontSize: 20,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  statusBar: {
+    marginLeft: 100,
+    marginTop: 15,
+    flexDirection: 'row',
+    borderRadius: 20,
+    width: 100,
+    height: 30,
+    //padding: 10,
+    borderColor: 'black',
+  },
+  content: {
+    marginTop: 50,
+    alignSelf: 'center'
+  }, 
+  savedTips: {
+    marginTop: 20,
+    color: 'black',
+
+  }
 
 })
+
+const NavigationPage =  StackNavigator({
+  DataScreen: {
+      screen: DataScreen
+  },
+  SavedTipScreen: { 
+      screen: SavedTipScreen 
+  },
+  
+});
+
+
 
 {/* <View>
         <Text>
