@@ -10,7 +10,7 @@ import {
 } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ChoiceButton from '../component/ChoiceButton';
-
+import LinearGradient from 'react-native-linear-gradient';
 
 const linedata = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -23,11 +23,11 @@ const linedata = {
 };
 
 export default class DataScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-           header: () => null
-        } 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: () => null
     }
+  }
 
   state = {
     sad: false,
@@ -54,72 +54,104 @@ export default class DataScreen extends React.Component {
   }
 
   handleTipButton = () => {
-      this.props.navigation.navigate('SavedTipScreen')
+    this.props.navigation.navigate('SavedTipScreen')
   }
 
   render() {
     const { sad, neutral, happy } = this.state
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Button title='View saved tips' 
-                    onPress={this.handleTipButton}/>
-          <Text style={styles.headerText}> View day with wake up feeling of </Text>
-          <View style={styles.statusBar}>
-            <ChoiceButton path={require('../images/sad.png')}
-              onPress={this.handleSadButton}> </ChoiceButton>
-            <ChoiceButton path={require('../images/neutral_face.png')}
-              onPress={this.handleNeutralButton}> </ChoiceButton>
-            <ChoiceButton path={require('../images/happy_face.png')}
-              onPress={this.handleHappyButton}> </ChoiceButton>
-          </View>
+      <LinearGradient style={{ flex: 1 }} colors={['#090E2C', '#5220AE']}>
+        <ScrollView>
 
-          {
-            sad && <View style={styles.content}>
-              <View>
-                <Text style={{alignSelf:'center'}}>
-                  Bezier Line Chart
+          <View style={styles.container}>
+            <Button title='View saved tips'
+              onPress={this.handleTipButton} />
+            <Text style={styles.headerText}> View day with wake up feeling of </Text>
+            <View style={styles.statusBar}>
+              <ChoiceButton path={require('../images/sad.png')}
+                onPress={this.handleSadButton}> </ChoiceButton>
+              <ChoiceButton path={require('../images/neutral_face.png')}
+                onPress={this.handleNeutralButton}> </ChoiceButton>
+              <ChoiceButton path={require('../images/happy_face.png')}
+                onPress={this.handleHappyButton}> </ChoiceButton>
+            </View>
+
+            {
+              sad && <View style={styles.content}>
+                <View style={styles.chart}>
+                  <Text style={{ alignSelf: 'center', color: 'white' }}>
+                    Sleeping Chart
                 </Text>
 
-                <LineChart
-                  data={linedata}
-                  width={Dimensions.get('window').width - 20} // from react-native
-                  height={220}
-                  yAxisLabel={'$'}
-                  chartConfig={{
-                    backgroundColor: '#e26a00',
-                    backgroundGradientFrom: '#fb8c00',
-                    backgroundGradientTo: '#ffa726',
-                    decimalPlaces: 2, // optional, defaults to 2dp
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
+                  <LineChart
+                    data={linedata}
+                    width={Dimensions.get('window').width - 20} // from react-native
+                    height={220}
+                    yAxisLabel={'$'}
+                    chartConfig={{
+                      backgroundColor: '#e26a00',
+                      backgroundGradientFrom: '#fb8c00',
+                      backgroundGradientTo: '#ffa726',
+                      decimalPlaces: 2, // optional, defaults to 2dp
+                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                      style: {
+                        borderRadius: 16
+                      }
+                    }}
+                    bezier
+                    style={{
+                      marginVertical: 8,
                       borderRadius: 16
-                    }
-                  }}
-                  bezier
-                  style={{
-                    marginVertical: 8,
-                    borderRadius: 16
-                  }}
-                />
+                    }}
+                  />
+                </View>
+
+                <View style={styles.chart}>
+                  <Text style={{ alignSelf: 'center', color: 'white' }}>
+                    Sleeping Chart
+                </Text>
+
+                  <LineChart
+                    data={linedata}
+                    width={Dimensions.get('window').width - 20} // from react-native
+                    height={220}
+                    yAxisLabel={'$'}
+                    chartConfig={{
+                      backgroundColor: '#e26a00',
+                      backgroundGradientFrom: '#fb8c00',
+                      backgroundGradientTo: '#ffa726',
+                      decimalPlaces: 2, // optional, defaults to 2dp
+                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                      style: {
+                        borderRadius: 16
+                      }
+                    }}
+                    bezier
+                    style={{
+                      marginVertical: 8,
+                      borderRadius: 16
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          }
+            }
 
-          {
-            neutral && <View style={styles.content}>
-              <Text> neutral </Text>
-            </View>
-          }
+            {
+              neutral && <View style={styles.content}>
+                <Text> neutral </Text>
+              </View>
+            }
 
-          {
-            happy && <View style={styles.content}>
-              <Text> happy </Text>
-            </View>
-          }
+            {
+              happy && <View style={styles.content}>
+                <Text> happy </Text>
+              </View>
+            }
 
-        </View>
-      </ScrollView>
+          </View>
+
+        </ScrollView>
+      </LinearGradient>
     )
   }
 }
@@ -137,6 +169,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   headerText: {
+    color: 'white',
     marginTop: 60,
     fontSize: 20,
     fontWeight: 'bold',
@@ -155,11 +188,14 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 50,
     alignSelf: 'center'
-  }, 
+  },
   savedTips: {
     marginTop: 20,
     color: 'black',
-    
+  }, 
+  chart: {
+    marginBottom: 50,
+    marginTop: 25,
   }
 
 })
