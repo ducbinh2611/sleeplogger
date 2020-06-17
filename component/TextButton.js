@@ -20,8 +20,8 @@ class TextButton extends React.Component {
     }
 
     render() {
-        const { active } = this.state
-        const { text, onPress, short } = this.props
+   
+        const { active, text, onPress, short } = this.props
         return (
             <TouchableOpacity
                 behavior={'padding'}
@@ -30,7 +30,6 @@ class TextButton extends React.Component {
                             : (active ? styles.longButtonActive
                                 :styles.longButtonInactive)}
                 onPress={() => {
-                    this.pressButton();
                     onPress();
                 }}
             >

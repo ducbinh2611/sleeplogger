@@ -22,6 +22,12 @@ class DiaryContainerMorning extends React.Component {
 
 
     state = {
+        q1o1: false,
+        q1o2: false,
+        q1o3: false,
+        q2o1: false,
+        q2o2: false,
+        q2o3: false,
         sleptTime: null,
         wakeUpTime: null,
         ease_of_sleep: -1,
@@ -45,12 +51,88 @@ class DiaryContainerMorning extends React.Component {
         this.setState({
             ease_of_sleep: value
         })
+        const { q1o1, q1o2, q1o3 } = this.state
+        if (value === 1) {
+            if (q1o1) {
+                this.setState({
+                    q1o1: !this.state.q1o1
+                })
+            } else {
+                this.setState({
+                    q1o1: !this.state.q1o1,
+                    q1o2: false,
+                    q1o3: false
+                })
+            }
+        } else if (value === 2) {
+            if (q1o2) {
+                this.setState({
+                    q1o2: !this.state.q1o2
+                })
+            } else {
+                this.setState({
+                    q1o2: !this.state.q1o2,
+                    q1o1: false,
+                    q1o3: false
+                })
+            }
+        } else {
+            if (q1o3) {
+                this.setState({
+                    q1o3: !this.state.q1o3
+                })
+            } else {
+                this.setState({
+                    q1o3: !this.state.q1o3,
+                    q1o1: false,
+                    q1o2: false
+                })
+            }
+        }
     }
 
     handleButtonQ2 = (value) => {
         this.setState({
             morning_feeling: value
         })
+        const { q2o1, q2o2, q2o3 } = this.state
+        if (value === 1) {
+            if (q2o1) {
+                this.setState({
+                    q2o1: !this.state.q2o1
+                })
+            } else {
+                this.setState({
+                    q2o1: !this.state.q2o1,
+                    q2o2: false,
+                    q2o3: false
+                })
+            }
+        } else if (value === 2) {
+            if (q2o2) {
+                this.setState({
+                    q2o2: !this.state.q2o2
+                })
+            } else {
+                this.setState({
+                    q2o2: !this.state.q2o2,
+                    q2o1: false,
+                    q2o3: false
+                })
+            }
+        } else {
+            if (q2o3) {
+                this.setState({
+                    q2o3: !this.state.q2o3
+                })
+            } else {
+                this.setState({
+                    q2o3: !this.state.q2o3,
+                    q2o1: false,
+                    q2o2: false
+                })
+            }
+        }
     }
 
     calcDate = () => {
@@ -126,11 +208,13 @@ class DiaryContainerMorning extends React.Component {
                             style={styles.question}
                             question={'How was your sleep?'}>
                             <ChoiceButton path={require('../images/sad.png')}
-
+                                active={this.state.q1o1}
                                 onPress={() => this.handleButtonQ1(1)}> </ChoiceButton>
                             <ChoiceButton path={require('../images/neutral_face.png')}
+                                active={this.state.q1o2}
                                 onPress={() => this.handleButtonQ1(2)}> </ChoiceButton>
                             <ChoiceButton path={require('../images/happy_face.png')}
+                                active={this.state.q1o3}
                                 onPress={() => this.handleButtonQ1(3)}> </ChoiceButton>
                         </Question>
 
@@ -138,10 +222,13 @@ class DiaryContainerMorning extends React.Component {
                             style={styles.question}
                             question={'How do you feel now?'}>
                             <ChoiceButton path={require('../images/sad.png')}
+                                active={this.state.q2o1}
                                 onPress={() => this.handleButtonQ2(1)}> </ChoiceButton>
                             <ChoiceButton path={require('../images/neutral_face.png')}
+                                active={this.state.q2o2}
                                 onPress={() => this.handleButtonQ2(2)}> </ChoiceButton>
                             <ChoiceButton path={require('../images/happy_face.png')}
+                                active={this.state.q2o3}
                                 onPress={() => this.handleButtonQ2(3)}> </ChoiceButton>
                         </Question>
 

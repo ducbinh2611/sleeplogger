@@ -36,21 +36,48 @@ export default class DataScreen extends React.Component {
   }
 
   handleSadButton = () => {
-    this.setState({
-      sad: !this.state.sad
-    })
+    if (this.state.sad) {
+      this.setState({
+        sad: !this.state.sad
+      })
+    } else {
+      this.setState({
+        sad: !this.state.sad,
+        neutral: false,
+        happy: false,
+      })
+    }
+    
   }
 
   handleNeutralButton = () => {
-    this.setState({
-      neutral: !this.state.neutral
-    })
+    if (this.state.neutral) {
+      this.setState({
+        neutral: !this.state.neutral
+      })
+    } else {
+      this.setState({
+        neutral: !this.state.neutral,
+        sad: false,
+        happy: false,
+      })
+    }
+    
   }
 
   handleHappyButton = () => {
-    this.setState({
-      happy: !this.state.happy
-    })
+    if (this.state.happy) {
+      this.setState({
+        happy: !this.state.happy
+      })
+    } else {
+      this.setState({
+        happy: !this.state.happy,
+        neutral: false,
+        sad: false,
+      })
+    }
+    
   }
 
   handleTipButton = () => {
@@ -69,11 +96,14 @@ export default class DataScreen extends React.Component {
             <Text style={styles.headerText}> View day with wake up feeling of </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
-                onPress={this.handleSadButton}> </ChoiceButton>
+                onPress={this.handleSadButton}
+                active={this.state.sad}> </ChoiceButton>
               <ChoiceButton path={require('../images/neutral_face.png')}
-                onPress={this.handleNeutralButton}> </ChoiceButton>
+                onPress={this.handleNeutralButton}
+                active={this.state.neutral}> </ChoiceButton>
               <ChoiceButton path={require('../images/happy_face.png')}
-                onPress={this.handleHappyButton}> </ChoiceButton>
+                onPress={this.handleHappyButton}
+                active={this.state.happy}> </ChoiceButton>
             </View>
 
             {

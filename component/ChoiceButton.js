@@ -8,20 +8,11 @@ import { Icon } from 'react-native-elements';
 
 class ChoiceButton extends React.Component {
 
-    state = {
-        active: false,
 
-    }
-
-    pressButton = () => {
-        this.setState({
-            active: !this.state.active
-        })
-    }
 
     render() {
-        const { active } = this.state
-        const { path, onPress } = this.props
+   
+        const { path, onPress, active } = this.props
         
 
 
@@ -31,7 +22,6 @@ class ChoiceButton extends React.Component {
                 style={active ? styles.choiceButtonActive
                     : styles.buttonInactive}
                 onPress={() => {
-                    this.pressButton();
                     onPress();
                 }}
 
@@ -46,15 +36,7 @@ class ChoiceButton extends React.Component {
         )
     }
 }
-// const ChoiceButton = props => (
-//     <TouchableOpacity
-//         behavior={'padding'}
-//         style={this}
 
-//     >
-//         <Icon name={"chevron-right"} size={props.size} color="#01a699" />
-//     </TouchableOpacity>
-// )
 
 const styles = StyleSheet.create({
     buttonInactive: {

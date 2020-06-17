@@ -13,6 +13,7 @@ class TipPopUp extends React.Component {
         return (
             <View style={styles.centeredView}>
                 <Modal
+                    
                     animationType="slide"
                     transparent={true}
                     visible={this.props.visible}
