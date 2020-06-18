@@ -29,9 +29,7 @@ const styles = StyleSheet.create({
 })
 
 const NavigationApp =  StackNavigator({
-    HomeContainer: {
-        screen: HomeContainer
-    },
+    
     LogInContainer: { 
         screen: LogInContainer 
     },

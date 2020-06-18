@@ -1,89 +1,147 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import BlueButton from '../component/BlueButton';
 import firebaseDb from '../firebaseDb';
-import {  Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackground, Dimensions, TouchableOpacity } from 'react-native';
+import night from '../images/night.png';
+import day from '../images/after_noon.png';
+import Icon from 'react-native-vector-icons/Ionicons';
 
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
 class SignUpContainer extends React.Component {
-	static navigationOptions = {
-		title: 'Sign Up',
-	};
+	static navigationOptions = ({ navigation }) => {
+		return {
+			header: () => null
+		}
+	}
 
 	state = {
 		name: '',
 		email: '',
 		password: '',
 		isSignUp: false,
+		passShown: false,
 	};
 
-	handleUpdateName = name => this.setState({name});
+	handleEyeButton = () => {
+		this.setState({
+			passShown: !this.state.passShown
+		})
+	}
 
-	handleUpdateEmail = email => this.setState({email});
+	handleUpdateName = name => this.setState({ name });
 
-	handleUpdatePassword = password => this.setState({password});
+	handleUpdateEmail = email => this.setState({ email });
+
+	handleUpdatePassword = password => this.setState({ password });
 
 	handleCreateUser = () => firebaseDb.firestore()
-								.collection('users')
-								.add({
-									name: this.state.name,
-									email: this.state.email,
-									password: this.state.password
-								}).then(() => this.setState({
-									name:'',
-									email:'',
-									password:'',
-									isSignUp: true,
-									})
-								).catch(err => console.error(err));
+		.collection('users')
+		.add({
+			name: this.state.name,
+			email: this.state.email,
+			password: this.state.password
+		}).then(() => this.setState({
+			name: '',
+			email: '',
+			password: '',
+			isSignUp: true,
+		})
+		).catch(err => console.error(err));
 
 	render() {
-		const { navigate } = this.props.navigation;
-		const { name, email, password, isSignUp} = this.state;
+		const { navigation } = this.props;
+		const { name, email, password, isSignUp, passShown } = this.state;
 		return (
-			<KeyboardAvoidingView behavior='padding' style={styles.container}>
-				<Text style={styles.image}>
-					SLEEPLOGGER
-				</Text>
+			<ImageBackground source={night} style={styles.container}
 
-				<TextInput
-					style={styles.textInput}
-					placeholder=" Name"
-					onChangeText={this.handleUpdateName}
-					value={name}
-				/>
+			>
+				<KeyboardAvoidingView behavior='padding' style={styles.container}>
+					<View style={styles.logoContainer}>
+						<Text style={styles.logo}>
+							SLEEPLOGGER
+						</Text>
+					</View>
 
-				<TextInput
-					style={styles.textInput}
-					placeholder=" Email"
-					onChangeText={this.handleUpdateEmail}
-					value={email}
-				/>
-				<TextInput
-					secureTextEntry={true}
-					style={styles.textInput}
-					placeholder=" Password"
-					onChangeText={this.handleUpdatePassword}
-					value={password}
-				/>
-				<BlueButton
-					style={styles.button}
-					onPress={() => {
-						if (
-							name.length &&
-							email.length &&
-							password.length
-						) {
-							this.handleCreateUser()
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-person'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							style={styles.input}
+							placeholder="Name"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdateName}
+							value={name}
+						/>
+					</View>
+
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-person'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							style={styles.input}
+							placeholder="Email"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdateEmail}
+							value={email}
+						/>
+					</View>
+
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-lock'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							secureTextEntry={passShown}
+							style={styles.input}
+							placeholder=" Password"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdatePassword}
+							value={password}
+						/>
+
+						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
+							<Icon name={'ios-eye'} size={26} color={'rgba(255,255,255,0.7)'} />
+						</TouchableOpacity>
+					</View>
+
+					<View style={{ marginBottom: 15 }}>
+						<TouchableOpacity
+							style={styles.logInButton}
+							onPress={() => {
+								if (
+									name.length &&
+									email.length &&
+									password.length
+								) {
+									this.handleCreateUser()
+								}
+
+							}}
+						//this.handleLogIn
+						>
+							<Text style={styles.logInText}> Sign Up </Text>
+						</TouchableOpacity>
+					</View>
+					
+					<TouchableOpacity onPress={() => navigation.navigate('LogInContainer')}>
+						<Text style={styles.logInText}>
+							Go back to log in page
+						</Text>
+					</TouchableOpacity>
+
+					<View style={{marginTop: 20}}>
+						{
+							isSignUp && <Text style={styles.successfulText}> Sign Up Successfully</Text>
 						}
-
-					}}
-				>
-					Sign Up
-				</BlueButton>
-				{
-					isSignUp && <Text style={styles.text}> Sign Up Successfully</Text>
-				}
-			</KeyboardAvoidingView>
+					</View>
+				</KeyboardAvoidingView>
+			</ImageBackground>
 
 		);
 	}
@@ -96,18 +154,16 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	image: {
+	logoContainer: {
+		marginBottom: 15,
+	},
+	logo: {
 		marginBottom: 40,
 		fontSize: 30,
+		color: 'white',
 	},
-	textInput: {
-		borderRadius: 30,
-		borderWidth: 1,
-		borderColor: 'black',
-		fontSize: 20,
-		marginBottom: 8,
-		width: 200,
-		height: 30,
+	inputContainer: {
+		marginTop: 10,
 	},
 	button: {
 		marginTop: 42,
@@ -117,6 +173,43 @@ const styles = StyleSheet.create({
 		color: 'green',
 		marginTop: 40,
 	},
+	input: {
+		width: WIDTH - 55,
+		height: 45,
+		borderRadius: 25,
+		fontSize: 16,
+		paddingLeft: 45,
+		backgroundColor: 'rgba(0,0,0,0.35)',
+		color: 'rgba(255,255,255,0.7)',
+		marginHorizontal: 25,
+	},
+	inputIcon: {
+		position: 'absolute',
+		top: 8,
+		left: 37,
+	}, eye: {
+		position: 'absolute',
+		top: 8,
+		right: 37,
+	},
+	logInButton: {
+		width: WIDTH - 55,
+		height: 45,
+		borderRadius: 25,
+		backgroundColor: '#432577',
+		justifyContent: 'center',
+		marginTop: 20,
+	},
+	logInText: {
+		color: 'rgba(255,255,255,0.7)',
+		fontSize: 16,
+		textAlign: 'center',
+	},
+	successfulText: {
+		color: 'orange',
+		fontSize: 20,
+		textAlign: 'center',
+	}
 });
 
 export default SignUpContainer

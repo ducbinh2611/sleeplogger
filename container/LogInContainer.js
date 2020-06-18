@@ -1,26 +1,39 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import BlueButton from '../component/BlueButton';
 import firebaseDb from '../firebaseDb';
-import {  Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackground, View, Dimensions, TouchableOpacity } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import night from '../images/night.png';
+import day from '../images/after_noon.png';
+import Icon from 'react-native-vector-icons/Ionicons';
 
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
 class LogInContainer extends React.Component {
-	static navigationOptions = {
-		title: 'Log In',
-	};
+	static navigationOptions = ({ navigation }) => {
+		return {
+			header: () => null
+		}
+	}
 
 	state = {
 		email: '',
 		password: '',
 		loading: false,
+		passShown: false,
 	};
 
-	handleUpdateEmail = email => this.setState({email});
+	handleEyeButton = () => {
+		this.setState({
+			passShown: !this.state.passShown
+		})
+	}
 
-	handleUpdatePassword = password => this.setState({password});
+	handleUpdateEmail = email => this.setState({ email });
+
+	handleUpdatePassword = password => this.setState({ password });
 
 	handleLogIn = () => {
 		const { email, password } = this.state;
@@ -38,14 +51,14 @@ class LogInContainer extends React.Component {
 						this.setState({
 							loading: false
 						})
-						
+
 						AsyncStorage.setItem("token", res.data.token)
-								.then(
-									res => {
-										this.props.navigation.navigate('MainScreen')
-									}
-								)
-						
+							.then(
+								res => {
+									this.props.navigation.navigate('MainScreen')
+								}
+							)
+
 					},
 					err => {
 						alert("Email or password is incorrect")
@@ -54,46 +67,75 @@ class LogInContainer extends React.Component {
 		} else {
 			alert("Key in email and password")
 		}
-		
+
 	}
 	render() {
-		
+
 		const { navigation } = this.props
 
-		const { loading, email, password, isSignUp} = this.state
+		const { loading, email, password, passShown } = this.state
 		return (
-			<KeyboardAvoidingView behavior='padding' style={styles.container}>
-				<Text style={styles.image}>
-					SLEEPLOGGER
-				</Text>
+			<ImageBackground source={night} style={styles.container}
 
-				
+			>
+				<KeyboardAvoidingView behavior='padding' style={styles.container}>
+					<View style={styles.logoContainer}>
+						<Text style={styles.logo}>
+							SLEEPLOGGER
+						</Text>
+					</View>
 
-				<TextInput
-					style={styles.textInput}
-					placeholder=" Email"
-					onChangeText={this.handleUpdateEmail}
-					value={email}
-				/>
-				<TextInput
-					secureTextEntry={true}
-					style={styles.textInput}
-					placeholder=" Password"
-					onChangeText={this.handleUpdatePassword}
-					value={password}
-				/>
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-person'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							style={styles.input}
+							placeholder="Email"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdateEmail}
+							value={email}
+						/>
+					</View>
 
-				<BlueButton
-					style={styles.button}
-					onPress={() => navigation.navigate('MainScreen')}
-					//this.handleLogIn
-				>
-					Log In
-				</BlueButton>
-				{
-					isSignUp && <Text style={styles.text}> Sign Up Successfully</Text>
-				}
-			</KeyboardAvoidingView>
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-lock'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							secureTextEntry={passShown}
+							style={styles.input}
+							placeholder=" Password"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdatePassword}
+							value={password}
+						/>
+
+						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
+							<Icon name={'ios-eye'} size={26} color={'rgba(255,255,255,0.7)'} />
+						</TouchableOpacity>
+					</View>
+
+					<View style={{marginBottom: 15}}>
+						<TouchableOpacity
+							style={styles.logInButton}
+							onPress={() => navigation.navigate('MainScreen')}
+						//this.handleLogIn
+						>
+							<Text style={styles.logInText}> Log In </Text>
+						</TouchableOpacity>
+					</View>
+
+					<TouchableOpacity onPress={() => navigation.navigate('SignUpContainer')}>
+						<Text style={styles.logInText}>
+							Don't have an account? Sign Up
+						</Text>
+					</TouchableOpacity>
+				</KeyboardAvoidingView>
+			</ImageBackground>
+
 
 		);
 	}
@@ -106,18 +148,16 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	image: {
+	logoContainer: {
+		marginBottom: 15,
+	},
+	logo: {
 		marginBottom: 40,
 		fontSize: 30,
+		color: 'white',
 	},
-	textInput: {
-		borderRadius: 30,
-		borderWidth: 1,
-		borderColor: 'black',
-		fontSize: 20,
-		marginBottom: 8,
-		width: 200,
-		height: 30,
+	inputContainer: {
+		marginTop: 10,
 	},
 	button: {
 		marginTop: 42,
@@ -127,6 +167,38 @@ const styles = StyleSheet.create({
 		color: 'green',
 		marginTop: 40,
 	},
+	input: {
+		width: WIDTH - 55,
+		height: 45,
+		borderRadius: 25,
+		fontSize: 16,
+		paddingLeft: 45,
+		backgroundColor: 'rgba(0,0,0,0.35)',
+		color: 'rgba(255,255,255,0.7)',
+		marginHorizontal: 25,
+	},
+	inputIcon: {
+		position: 'absolute',
+		top: 8,
+		left: 37,
+	}, eye: {
+		position: 'absolute',
+		top: 8,
+		right: 37,
+	},
+	logInButton: {
+		width: WIDTH - 55,
+		height: 45,
+		borderRadius: 25,
+		backgroundColor: '#432577',
+		justifyContent: 'center',
+		marginTop: 20,
+	},
+	logInText: {
+		color: 'rgba(255,255,255,0.7)',
+		fontSize: 16,
+		textAlign: 'center',
+	}
 });
 
 export default withNavigation(LogInContainer);
