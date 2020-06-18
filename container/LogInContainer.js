@@ -10,6 +10,7 @@ import day from '../images/after_noon.png';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
+const url = ' http://sleep-logger-dev.herokuapp.com/authenticate';
 
 class LogInContainer extends React.Component {
 	static navigationOptions = ({ navigation }) => {
@@ -45,14 +46,27 @@ class LogInContainer extends React.Component {
 			this.setState({
 				loading: true
 			});
-			axios.post('https://reqres.in/api/login', req)
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					Accept: "application/json, text/plain, */*",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					user: {
+						email: this.state.email,
+						password: this.state.password,
+					}
+
+				})
+			}).then(res => res.json())
 				.then(
 					res => {
 						this.setState({
 							loading: false
 						})
 
-						AsyncStorage.setItem("token", res.data.token)
+						AsyncStorage.setItem("token", res.password_digest)
 							.then(
 								res => {
 									this.props.navigation.navigate('MainScreen')
@@ -122,7 +136,7 @@ class LogInContainer extends React.Component {
 						<TouchableOpacity
 							style={styles.logInButton}
 							onPress={() => navigation.navigate('MainScreen')}
-						//this.handleLogIn
+						// () => navigation.navigate('MainScreen') this.handleLogIn
 						>
 							<Text style={styles.logInText}> Log In </Text>
 						</TouchableOpacity>

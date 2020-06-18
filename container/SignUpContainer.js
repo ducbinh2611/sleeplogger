@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackgroun
 import night from '../images/night.png';
 import day from '../images/after_noon.png';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
@@ -19,6 +20,7 @@ class SignUpContainer extends React.Component {
 		name: '',
 		email: '',
 		password: '',
+		password_confirmation: '',
 		isSignUp: false,
 		passShown: false,
 	};
@@ -29,29 +31,70 @@ class SignUpContainer extends React.Component {
 		})
 	}
 
+
 	handleUpdateName = name => this.setState({ name });
 
 	handleUpdateEmail = email => this.setState({ email });
 
 	handleUpdatePassword = password => this.setState({ password });
 
-	handleCreateUser = () => firebaseDb.firestore()
-		.collection('users')
-		.add({
-			name: this.state.name,
-			email: this.state.email,
-			password: this.state.password
-		}).then(() => this.setState({
+	handleUpdatePasswordCofm = password_confirmation => this.setState({ password_confirmation });
+
+	reset = () => {
+		this.setState({
 			name: '',
-			email: '',
-			password: '',
-			isSignUp: true,
+				email: '',
+				password: '',
+				password_confirmation: '',
+				isSignUp: true,
 		})
-		).catch(err => console.error(err));
+	}
+	// handleCreateUser = () => firebaseDb.firestore()
+	// 	.collection('users')
+	// 	.add({
+	// 		name: this.state.name,
+	// 		email: this.state.email,
+	// 		password: this.state.password
+	// 	}).then(() => this.setState({
+	// 		name: '',
+	// 		email: '',
+	// 		password: '',
+	// 		isSignUp: true,
+	// 	})
+	// 	).catch(err => console.error(err));
+
+	handleSubmitButton = () => {
+		if (this.state.password === this.state.password_confirmation) {
+			fetch('http://sleep-logger-dev.herokuapp.com/users', {
+				method: 'POST',
+				headers: {
+					Accept: "application/json, text/plain, */*",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					user: {
+						name: this.state.name,
+						email: this.state.email,
+						password: this.state.password,
+						password_confirmation: this.state.password_confirmation,
+					}
+
+				})
+
+			}).then(res => res.json())
+			.then(res => {
+				AsyncStorage.setItem("token", res.password_digest)
+			})
+			.catch(err => console.error(err))
+		} else {
+			alert('Passwords do not match')
+		}
+
+	}
 
 	render() {
 		const { navigation } = this.props;
-		const { name, email, password, isSignUp, passShown } = this.state;
+		const { name, email, password, password_confirmation, isSignUp, passShown } = this.state;
 		return (
 			<ImageBackground source={night} style={styles.container}
 
@@ -76,6 +119,7 @@ class SignUpContainer extends React.Component {
 							value={name}
 						/>
 					</View>
+
 
 					<View style={styles.inputContainer}>
 						<Icon name={'ios-person'}
@@ -110,6 +154,25 @@ class SignUpContainer extends React.Component {
 						</TouchableOpacity>
 					</View>
 
+					<View style={styles.inputContainer}>
+						<Icon name={'ios-lock'}
+							size={28}
+							color={'rgba(255,255,255,0.7)'}
+							style={styles.inputIcon} />
+						<TextInput
+							secureTextEntry={passShown}
+							style={styles.input}
+							placeholder=" Confirm Password"
+							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							onChangeText={this.handleUpdatePasswordCofm}
+							value={password_confirmation}
+						/>
+
+						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
+							<Icon name={'ios-eye'} size={26} color={'rgba(255,255,255,0.7)'} />
+						</TouchableOpacity>
+					</View>
+
 					<View style={{ marginBottom: 15 }}>
 						<TouchableOpacity
 							style={styles.logInButton}
@@ -117,9 +180,10 @@ class SignUpContainer extends React.Component {
 								if (
 									name.length &&
 									email.length &&
-									password.length
+									password.length &&
+									password_confirmation.length
 								) {
-									this.handleCreateUser()
+									this.handleSubmitButton()
 								}
 
 							}}
@@ -128,14 +192,14 @@ class SignUpContainer extends React.Component {
 							<Text style={styles.logInText}> Sign Up </Text>
 						</TouchableOpacity>
 					</View>
-					
+
 					<TouchableOpacity onPress={() => navigation.navigate('LogInContainer')}>
 						<Text style={styles.logInText}>
 							Go back to log in page
 						</Text>
 					</TouchableOpacity>
 
-					<View style={{marginTop: 20}}>
+					<View style={{ marginTop: 20 }}>
 						{
 							isSignUp && <Text style={styles.successfulText}> Sign Up Successfully</Text>
 						}
