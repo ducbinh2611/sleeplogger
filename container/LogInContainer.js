@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import BlueButton from '../component/BlueButton';
 import firebaseDb from '../firebaseDb';
-import { Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackground, View, Dimensions, TouchableOpacity } from 'react-native';
+import {
+	Text, StyleSheet, TextInput,
+	KeyboardAvoidingView, ImageBackground, View,
+	Dimensions, TouchableOpacity, ActivityIndicator
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -59,10 +63,10 @@ class LogInContainer extends React.Component {
 
 
 				})
-			}).then(res => {const item = res.json(); console.warn(item); return item})
+			}).then(res => res.json())
 				.then(
 					res => {
-						
+
 						this.setState({
 							loading: false
 						})
@@ -77,12 +81,12 @@ class LogInContainer extends React.Component {
 					},
 					err => {
 
-						console.warn('err ' + err)
+
 						alert("Email or password is incorrect")
 					}
 
 
-				)
+				).catch(err => console.error(err))
 		} else {
 			alert("Key in email and password")
 		}
@@ -152,6 +156,12 @@ class LogInContainer extends React.Component {
 							Don't have an account? Sign Up
 						</Text>
 					</TouchableOpacity>
+
+					{loading &&
+						<View style={styles.loading}>
+							<ActivityIndicator size='large' />
+						</View>
+					}
 				</KeyboardAvoidingView>
 			</ImageBackground>
 
@@ -217,6 +227,16 @@ const styles = StyleSheet.create({
 		color: 'rgba(255,255,255,0.7)',
 		fontSize: 16,
 		textAlign: 'center',
+	},
+	loading: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: '#F5FCFF88',
 	}
 });
 

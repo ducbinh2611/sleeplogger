@@ -166,7 +166,7 @@ class DiaryContainerMorning extends React.Component {
             headers: {
                 Accept: "application/json, text/plain, */*",
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + token,
+                Authorization: 'Bearer ' + token,
             },
             body: JSON.stringify({
                 morning_entry: {
@@ -180,10 +180,10 @@ class DiaryContainerMorning extends React.Component {
             })
 
         }
-        )})
-        console.warn('bed time ' + this.state.sleptTime)
-        console.warn('wake up time ' + this.state.wakeUpTime)
-        console.warn('ease of sleep ' + this.state.ease_of_sleep)
+        ).then(res => res.text()).then(res => console.warn('res ' + res)).catch(err => console.error(err))})
+        // console.warn('bed time ' + this.state.sleptTime)
+        // console.warn('wake up time ' + this.state.wakeUpTime)
+        // console.warn('ease of sleep ' + this.state.ease_of_sleep)
 
     }
 

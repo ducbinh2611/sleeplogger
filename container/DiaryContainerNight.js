@@ -4,6 +4,7 @@ import QuestionText from '../component/QuestionText'
 import TextButton from '../component/TextButton';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 class DiaryContainerNight extends React.Component {
@@ -33,9 +34,9 @@ class DiaryContainerNight extends React.Component {
         q5o2: false,
         q6o1: false,
         q6o2: false,
-        napMorning: -1,
-        napAfternoon: -1,
-        napMEvening: -1,
+        napMorning: null,
+        napAfternoon: null,
+        napEvening: null,
         caffeineMorning: -1,
         caffeineAfternoon: -1,
         caffeineEvening: -1,
@@ -46,7 +47,7 @@ class DiaryContainerNight extends React.Component {
             napMorning: value
         })
         const { q4o1, q4o2 } = this.state
-        if (value === 0) {
+        if (value === false) {
             if (q4o1) {
                 this.setState({
                     q4o1: !this.state.q4o1
@@ -76,7 +77,7 @@ class DiaryContainerNight extends React.Component {
             napAfternoon: value
         })
         const { q5o1, q5o2 } = this.state
-        if (value === 0) {
+        if (value === false) {
             if (q5o1) {
                 this.setState({
                     q5o1: !this.state.q5o1
@@ -106,7 +107,7 @@ class DiaryContainerNight extends React.Component {
             napEvening: value
         })
         const { q6o1, q6o2 } = this.state
-        if (value === 0) {
+        if (value === false) {
             if (q6o1) {
                 this.setState({
                     q6o1: !this.state.q6o1
@@ -311,6 +312,35 @@ class DiaryContainerNight extends React.Component {
         }
     }
 
+
+    handleSubmitButton = () => {
+        AsyncStorage.getItem('token').then(token => {console.warn(token);
+        fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries', {
+            method: 'POST',
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                evening_entry: {
+                    caffeine_morning: this.state.caffeineMorning,
+                    caffeine_afternoon: this.state.caffeineAfternoon,
+                    caffeine_evening: this.state.caffeineEvening,
+                    nap_morning: this.state.napMorning,
+                    nap_afternoon: this.state.napAfternoon,
+                    nap_evening: this.state.napEvening,
+                }
+
+            })
+
+        }
+        ).then(res => res.text()).then(res => console.warn('res ' + res)).catch(err => console.error(err))})
+        // console.warn('bed time ' + this.state.sleptTime)
+        // console.warn('wake up time ' + this.state.wakeUpTime)
+        // console.warn('ease of sleep ' + this.state.ease_of_sleep)
+
+    }
     render() {
         const { napMorning, napAfternoon, napEvening,
             caffeineMorning, caffeineAfternoon, caffeineEvening,
@@ -371,27 +401,27 @@ class DiaryContainerNight extends React.Component {
                             <View style={styles.options}>
                                 <Text style={styles.text}>Morning?    </Text>
                                 <TextButton size={15} text={'Yes'} short={true} active={q4o2}
-                                    onPress={() => this.handleNapMorning(1)}> </TextButton>
+                                    onPress={() => this.handleNapMorning(true)}> </TextButton>
                                 <TextButton size={15} text={'No'} short={true} active={q4o1}
-                                    onPress={() => this.handleNapMorning(0)}> </TextButton>
+                                    onPress={() => this.handleNapMorning(false)}> </TextButton>
 
                             </View>
 
                             <View style={styles.options}>
                                 <Text style={styles.text}>Afternoon?</Text>
                                 <TextButton size={15} text={'Yes'} short={true} active={q5o2}
-                                    onPress={() => this.handleNapAfternoon(1)}> </TextButton>
+                                    onPress={() => this.handleNapAfternoon(true)}> </TextButton>
                                 <TextButton size={15} text={'No'} short={true} active={q5o1}
-                                    onPress={() => this.handleNapAfternoon(0)}> </TextButton>
+                                    onPress={() => this.handleNapAfternoon(false)}> </TextButton>
 
                             </View>
 
                             <View style={styles.options}>
                                 <Text style={styles.text}>Evening?     </Text>
                                 <TextButton size={15} text={'Yes'} short={true} active={q6o2}
-                                    onPress={() => this.handleNapEvening(1)}> </TextButton>
+                                    onPress={() => this.handleNapEvening(true)}> </TextButton>
                                 <TextButton size={15} text={'No'} short={true} active={q6o1}
-                                    onPress={() => this.handleNapEvening(0)}> </TextButton>
+                                    onPress={() => this.handleNapEvening(false)}> </TextButton>
 
                             </View>
                         </QuestionText>
@@ -400,14 +430,14 @@ class DiaryContainerNight extends React.Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 onPress={() => {
-                                    if (napMorning && napAfternoon && napEvening
-                                        && caffeineAfternoon && caffeineEvening && caffeineMorning) {
+                                    if (true) {
                                         console.warn('nap morn ' + napMorning);
                                         console.warn('nap aft ' + napAfternoon);
                                         console.warn('nap even ' + napEvening);
                                         console.warn('caf mor ' + caffeineMorning);
                                         console.warn('caf aft ' + caffeineAfternoon);
                                         console.warn('caf eve ' + caffeineEvening);
+                                        this.handleSubmitButton()
                                     } else {
                                         alert("Key in all data first")
                                     }
