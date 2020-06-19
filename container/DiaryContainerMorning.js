@@ -11,6 +11,7 @@ import Question from '../component/Question';
 import ChoiceButton from '../component/ChoiceButton';
 import TimePicker from '../component/TimePicker';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class DiaryContainerMorning extends React.Component {
     static navigationOptions = {
@@ -159,12 +160,13 @@ class DiaryContainerMorning extends React.Component {
     }
 
     handleSubmitButton = () => {
-
+        AsyncStorage.getItem('token').then(token => {console.warn(token);
         fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
             method: 'POST',
             headers: {
                 Accept: "application/json, text/plain, */*",
                 "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
                 morning_entry: {
@@ -178,7 +180,7 @@ class DiaryContainerMorning extends React.Component {
             })
 
         }
-        )
+        )})
         console.warn('bed time ' + this.state.sleptTime)
         console.warn('wake up time ' + this.state.wakeUpTime)
         console.warn('ease of sleep ' + this.state.ease_of_sleep)

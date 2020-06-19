@@ -10,7 +10,7 @@ import day from '../images/after_noon.png';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
-const url = ' http://sleep-logger-dev.herokuapp.com/authenticate';
+const url = 'https://sleep-logger-dev.herokuapp.com/authenticate';
 
 class LogInContainer extends React.Component {
 	static navigationOptions = ({ navigation }) => {
@@ -46,27 +46,28 @@ class LogInContainer extends React.Component {
 			this.setState({
 				loading: true
 			});
-			fetch(url, {
+			fetch('https://sleep-logger-dev.herokuapp.com/authenticate', {
 				method: 'POST',
 				headers: {
 					Accept: "application/json, text/plain, */*",
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					user: {
-						email: this.state.email,
-						password: this.state.password,
-					}
+
+					email: this.state.email,
+					password: this.state.password,
+
 
 				})
-			}).then(res => res.json())
+			}).then(res => {const item = res.json(); console.warn(item); return item})
 				.then(
 					res => {
+						
 						this.setState({
 							loading: false
 						})
 
-						AsyncStorage.setItem("token", res.password_digest)
+						AsyncStorage.setItem("token", res.token)
 							.then(
 								res => {
 									this.props.navigation.navigate('MainScreen')
@@ -75,8 +76,12 @@ class LogInContainer extends React.Component {
 
 					},
 					err => {
+
+						console.warn('err ' + err)
 						alert("Email or password is incorrect")
 					}
+
+
 				)
 		} else {
 			alert("Key in email and password")
@@ -132,10 +137,10 @@ class LogInContainer extends React.Component {
 						</TouchableOpacity>
 					</View>
 
-					<View style={{marginBottom: 15}}>
+					<View style={{ marginBottom: 15 }}>
 						<TouchableOpacity
 							style={styles.logInButton}
-							onPress={() => navigation.navigate('MainScreen')}
+							onPress={this.handleLogIn}
 						// () => navigation.navigate('MainScreen') this.handleLogIn
 						>
 							<Text style={styles.logInText}> Log In </Text>

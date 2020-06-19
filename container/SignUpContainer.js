@@ -83,7 +83,8 @@ class SignUpContainer extends React.Component {
 
 			}).then(res => res.json())
 			.then(res => {
-				AsyncStorage.setItem("token", res.password_digest)
+				AsyncStorage.setItem("token", res.token)
+				this.reset()
 			})
 			.catch(err => console.error(err))
 		} else {
