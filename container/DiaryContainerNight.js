@@ -446,7 +446,8 @@ class DiaryContainerNight extends React.Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 onPress={() => {
-                                    if (true) {
+                                    if (napMorning !== null && napAfternoon !==null && napEvening !== null
+                                        && caffeineMorning!== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
                                         // console.warn('nap morn ' + napMorning);
                                         // console.warn('nap aft ' + napAfternoon);
                                         // console.warn('nap even ' + napEvening);

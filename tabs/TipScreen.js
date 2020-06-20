@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class TipScreen extends React.Component {
     static navigationOptions = {
@@ -15,13 +16,14 @@ class TipScreen extends React.Component {
         source: 'source',
     }
 
-    componentDidMount = () => {
+    // componentDidMount = () => {
 
-    }
-
+    // }
+    
     handleSaveButton = () => {
-        fetch()
+        AsyncStorage.setItem('tip', JSON.stringify(true)).then(() => alert('done'))
     }
+    // refresh tip?
 
     render() {
         return (
@@ -45,7 +47,7 @@ class TipScreen extends React.Component {
 
                             <TouchableOpacity
                                 style={styles.saveButton}
-                                onPress={() => null}
+                                onPress={this.handleSaveButton}
                             >
                                 <Text style={styles.saveButtonText}>
                                     Find it useful? Save it to your tips bank

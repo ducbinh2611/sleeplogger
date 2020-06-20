@@ -257,7 +257,10 @@ class DiaryContainerMorning extends React.Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 onPress={() => {
-                                    if (sleptTime && wakeUpTime && ease_of_sleep && morning_feeling) {
+                                    if (sleptTime !== null 
+                                        && wakeUpTime !== null 
+                                        && ease_of_sleep !== -1
+                                        && morning_feeling !== -1) {
                                         this.handleSubmitButton()
                                         alert("Submitted successfully")
                                     } else {
