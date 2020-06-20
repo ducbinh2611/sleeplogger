@@ -35,6 +35,21 @@ class DiaryContainerMorning extends React.Component {
         morning_feeling: -1,
     }
 
+    reset = () => {
+        this.setState({
+            q1o1: false,
+            q1o2: false,
+            q1o3: false,
+            q2o1: false,
+            q2o2: false,
+            q2o3: false,
+            sleptTime: null,
+            wakeUpTime: null,
+            ease_of_sleep: -1,
+            morning_feeling: -1,
+        })
+    }
+
     handleChangeSleepTime = (value) => {
         this.setState({
             sleptTime: value
@@ -138,8 +153,9 @@ class DiaryContainerMorning extends React.Component {
 
     calcDate = () => {
         const sleptHour = this.state.sleptTime.getHours()
+        const wakeUpHour = this.state.wakeUpTime.getHours()
         //console.warn('slept hour ' + sleptHour)
-        if (sleptHour > 12) {
+        if (sleptHour > 12 && wakeUpHour < 12) {
             const timeInAmPm = sleptHour - 12
             const min = this.state.sleptTime.getMinutes()
             const nightMins = (timeInAmPm * 60) + min
@@ -154,33 +170,34 @@ class DiaryContainerMorning extends React.Component {
         }
     }
 
-    testFn = () => {
-        //console.warn(this.state.sleptTime.getTime())
-        return this.calcDate()
-    }
 
     handleSubmitButton = () => {
-        AsyncStorage.getItem('token').then(token => {console.warn(token);
-        fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
-            method: 'POST',
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-                Authorization: 'Bearer ' + token,
-            },
-            body: JSON.stringify({
-                morning_entry: {
-                    bed_time: this.state.sleptTime,
-                    wake_up_time: this.state.wakeUpTime,
-                    ease_of_sleep: this.state.ease_of_sleep,
-                    hours_of_sleep: this.calcDate(),
-                    morning_feeling: this.state.morning_feeling,
-                }
+        AsyncStorage.getItem('token').then(token => {
+            //console.warn(token);
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                    morning_entry: {
+                        bed_time: this.state.sleptTime,
+                        wake_up_time: this.state.wakeUpTime,
+                        ease_of_sleep: this.state.ease_of_sleep,
+                        hours_of_sleep: this.calcDate(),
+                        morning_feeling: this.state.morning_feeling,
+                    }
 
-            })
+                })
 
-        }
-        ).then(res => res.text()).then(res => console.warn('res ' + res)).catch(err => console.error(err))})
+            }
+            )
+            .then((res) => this.reset())
+            .catch(err => console.error(err))
+        })
+        //.then(res => res.text()).then(res => console.warn('res ' + res))
         // console.warn('bed time ' + this.state.sleptTime)
         // console.warn('wake up time ' + this.state.wakeUpTime)
         // console.warn('ease of sleep ' + this.state.ease_of_sleep)
@@ -196,12 +213,14 @@ class DiaryContainerMorning extends React.Component {
                     <View style={styles.container}>
                         <TimePicker
                             style={styles.question}
+                            chosenDate={this.state.sleptTime}
                             onChange={time => this.handleChangeSleepTime(time)}
                             question={'Last night you slept at'}
                         />
 
                         <TimePicker
                             style={styles.question}
+                            chosenDate={this.state.wakeUpTime}
                             onChange={time => this.handleChangeWakeUpTime(time)}
                             question={'Today you woke up at'}
                         />
@@ -240,6 +259,7 @@ class DiaryContainerMorning extends React.Component {
                                 onPress={() => {
                                     if (sleptTime && wakeUpTime && ease_of_sleep && morning_feeling) {
                                         this.handleSubmitButton()
+                                        alert("Submitted successfully")
                                     } else {
                                         alert("Key in all data first")
                                     }
@@ -271,14 +291,14 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginTop: 40,
-        marginBottom: 50,
+        marginBottom: 100,
 
     },
     button: {
         alignItems: 'center',
         paddingHorizontal: 30,
         borderRadius: 20,
-        backgroundColor: 'yellow'
+        backgroundColor: 'transparent'
     },
     question: {
         marginTop: 20,
@@ -289,7 +309,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
     },
 
 })

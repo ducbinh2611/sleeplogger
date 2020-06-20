@@ -21,9 +21,9 @@ class TargetScreen extends React.Component {
     constructor(props) {
         super(props)
         this.localNotify = null,
-            this.state = {
-                targetTime: null
-            }
+        this.state = {
+            targetTime: null
+        }
     }
 
     componentDidMount() {
@@ -38,17 +38,11 @@ class TargetScreen extends React.Component {
     }
 
     onPressSendNotification = () => {
-        // this.localNotify.showNotification(
-        //     1,
-        //     "App Notification",
-        //     "Local Notification",
-        //     {}, //data
-        //     {}, //options
-        // )
         if (this.state.targetTime !== null) {
             this.state.targetTime.setMinutes(this.state.targetTime.getMinutes() - 30);
             this.state.targetTime.setSeconds(0, 0);
             this.localNotify.scheduleNotification(this.state.targetTime)
+            alert("Succesfully schedule")
         } else {
             alert("Specify time first");
         }
@@ -62,6 +56,7 @@ class TargetScreen extends React.Component {
                     <TimePicker
                         style={styles.question}
                         question={'Tonight I want to go to bed at'}
+                        chosenDate={this.state.targetTime}
                         onChange={(date) => this.handleTimePicker(date)}
                     >
 

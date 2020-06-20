@@ -42,6 +42,17 @@ class DiaryContainerNight extends React.Component {
         caffeineEvening: -1,
     }
 
+    reset = () => {
+        this.setState({
+            napMorning: null,
+            napAfternoon: null,
+            napEvening: null,
+            caffeineMorning: -1,
+            caffeineAfternoon: -1,
+            caffeineEvening: -1,
+        })
+    }
+
     handleNapMorning = (value) => {
         this.setState({
             napMorning: value
@@ -150,7 +161,7 @@ class DiaryContainerNight extends React.Component {
                     q1o4: false,
                 })
             }
-        } else if ( value === 1 ) {
+        } else if (value === 1) {
             if (q1o2) {
                 this.setState({
                     q1o2: !this.state.q1o2
@@ -210,7 +221,7 @@ class DiaryContainerNight extends React.Component {
                     q2o4: false,
                 })
             }
-        } else if ( value === 1 ) {
+        } else if (value === 1) {
             if (q2o2) {
                 this.setState({
                     q2o2: !this.state.q2o2
@@ -270,7 +281,7 @@ class DiaryContainerNight extends React.Component {
                     q3o4: false,
                 })
             }
-        } else if ( value === 1 ) {
+        } else if (value === 1) {
             if (q3o2) {
                 this.setState({
                     q3o2: !this.state.q3o2
@@ -314,28 +325,33 @@ class DiaryContainerNight extends React.Component {
 
 
     handleSubmitButton = () => {
-        AsyncStorage.getItem('token').then(token => {console.warn(token);
-        fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries', {
-            method: 'POST',
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json",
-                Authorization: 'Bearer ' + token,
-            },
-            body: JSON.stringify({
-                evening_entry: {
-                    caffeine_morning: this.state.caffeineMorning,
-                    caffeine_afternoon: this.state.caffeineAfternoon,
-                    caffeine_evening: this.state.caffeineEvening,
-                    nap_morning: this.state.napMorning,
-                    nap_afternoon: this.state.napAfternoon,
-                    nap_evening: this.state.napEvening,
-                }
+        AsyncStorage.getItem('token').then(token => {
+            //console.warn(token);
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries', {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                    evening_entry: {
+                        caffeine_morning: this.state.caffeineMorning,
+                        caffeine_afternoon: this.state.caffeineAfternoon,
+                        caffeine_evening: this.state.caffeineEvening,
+                        nap_morning: this.state.napMorning,
+                        nap_afternoon: this.state.napAfternoon,
+                        nap_evening: this.state.napEvening,
+                    }
 
-            })
+                })
 
-        }
-        ).then(res => res.text()).then(res => console.warn('res ' + res)).catch(err => console.error(err))})
+            }
+            )
+            .then(() => this.reset())
+            .catch(err => console.error(err))
+        })
+        //.then(res => res.text()).then(res => console.warn('res ' + res))
         // console.warn('bed time ' + this.state.sleptTime)
         // console.warn('wake up time ' + this.state.wakeUpTime)
         // console.warn('ease of sleep ' + this.state.ease_of_sleep)
@@ -362,7 +378,7 @@ class DiaryContainerNight extends React.Component {
                                     onPress={() => this.handleCafMorning(0)}> </TextButton>
                                 <TextButton size={10} text={'Low'} short={false} active={q1o2}
                                     onPress={() => this.handleCafMorning(1)}> </TextButton>
-                                <TextButton size={10} text={'Medium'} short={false} active={q1o3}
+                                <TextButton size={10} text={'Med'} short={false} active={q1o3}
                                     onPress={() => this.handleCafMorning(2)}> </TextButton>
                                 <TextButton size={10} text={'High'} short={false} active={q1o4}
                                     onPress={() => this.handleCafMorning(3)}> </TextButton>
@@ -374,7 +390,7 @@ class DiaryContainerNight extends React.Component {
                                     onPress={() => this.handleCafAfternoon(0)}> </TextButton>
                                 <TextButton size={10} text={'Low'} short={false} active={q2o2}
                                     onPress={() => this.handleCafAfternoon(1)}> </TextButton>
-                                <TextButton size={10} text={'Medium'} short={false} active={q2o3}
+                                <TextButton size={10} text={'Med'} short={false} active={q2o3}
                                     onPress={() => this.handleCafAfternoon(2)}> </TextButton>
                                 <TextButton size={10} text={'High'} short={false} active={q2o4}
                                     onPress={() => this.handleCafAfternoon(3)}> </TextButton>
@@ -386,7 +402,7 @@ class DiaryContainerNight extends React.Component {
                                     onPress={() => this.handleCafEvening(0)}> </TextButton>
                                 <TextButton size={10} text={'Low'} short={false} active={q3o2}
                                     onPress={() => this.handleCafEvening(1)}> </TextButton>
-                                <TextButton size={10} text={'Medium'} short={false} active={q3o3}
+                                <TextButton size={10} text={'Med'} short={false} active={q3o3}
                                     onPress={() => this.handleCafEvening(2)}> </TextButton>
                                 <TextButton size={10} text={'High'} short={false} active={q3o4}
                                     onPress={() => this.handleCafEvening(3)}> </TextButton>
@@ -431,13 +447,14 @@ class DiaryContainerNight extends React.Component {
                                 style={styles.button}
                                 onPress={() => {
                                     if (true) {
-                                        console.warn('nap morn ' + napMorning);
-                                        console.warn('nap aft ' + napAfternoon);
-                                        console.warn('nap even ' + napEvening);
-                                        console.warn('caf mor ' + caffeineMorning);
-                                        console.warn('caf aft ' + caffeineAfternoon);
-                                        console.warn('caf eve ' + caffeineEvening);
+                                        // console.warn('nap morn ' + napMorning);
+                                        // console.warn('nap aft ' + napAfternoon);
+                                        // console.warn('nap even ' + napEvening);
+                                        // console.warn('caf mor ' + caffeineMorning);
+                                        // console.warn('caf aft ' + caffeineAfternoon);
+                                        // console.warn('caf eve ' + caffeineEvening);
                                         this.handleSubmitButton()
+                                        alert("Submitted successfully")
                                     } else {
                                         alert("Key in all data first")
                                     }
@@ -486,12 +503,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 30,
         borderRadius: 20,
-        backgroundColor: 'yellow',
+        backgroundColor: 'transparent',
         marginBottom: 10,
     },
     buttonContainer: {
         marginTop: 40,
-        marginBottom: 40,
+        marginBottom: 100,
 
     },
     textInput: {
@@ -499,7 +516,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
     },
 })
 

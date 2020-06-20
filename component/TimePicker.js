@@ -23,8 +23,6 @@ class TimePicker extends React.Component {
         //console.warn(dateTime)
         this.setState({
             isPickerVisible: false,
-            chosenDate: moment(dateTime).format('LT'),
-            chosenDateObj: dateTime,
         })
         
         this.props.onChange(dateTime)
@@ -47,7 +45,7 @@ class TimePicker extends React.Component {
     
         <View style={[styles.container, this.props.style]}>
             <Text style={styles.header}> 
-                {this.props.question} {this.state.chosenDate} 
+                {this.props.question} {this.props.chosenDate !== null ? moment(this.props.chosenDate).format('LT') : ''} 
             </Text>
             
             <TouchableOpacity 
