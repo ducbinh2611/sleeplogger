@@ -11,12 +11,44 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import ChoiceButton from '../component/ChoiceButton';
 import LinearGradient from 'react-native-linear-gradient';
+import LineGraph from '../graph/LineGraph';
+import BarGraph from '../graph/BarGraph';
 
 const linedata = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  labels: ['3.0', '3.5', '4.5', '5.0', '5.5'],
   datasets: [
     {
-      data: [20, 45, 28, 80, 99, 43],
+      data: [20, 14, 28, 18, 23],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafSadMorning = {
+  labels: ['None', 'Low', 'Meidum', 'High'],
+  datasets: [
+    {
+      data: [0, 4, 1, 2],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafSadAfternoon = {
+  labels: ['None', 'Low', 'Meidum', 'High'],
+  datasets: [
+    {
+      data: [0, 4, 12, 15],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafSadEvening= {
+  labels: ['None', 'Low', 'Meidum', 'High'],
+  datasets: [
+    {
+      data: [0, 4, 1, 25],
       strokeWidth: 2, // optional
     },
   ],
@@ -47,7 +79,7 @@ export default class DataScreen extends React.Component {
         happy: false,
       })
     }
-    
+
   }
 
   handleNeutralButton = () => {
@@ -62,7 +94,7 @@ export default class DataScreen extends React.Component {
         happy: false,
       })
     }
-    
+
   }
 
   handleHappyButton = () => {
@@ -77,7 +109,7 @@ export default class DataScreen extends React.Component {
         sad: false,
       })
     }
-    
+
   }
 
   handleTipButton = () => {
@@ -107,63 +139,31 @@ export default class DataScreen extends React.Component {
             </View>
 
             {
-              sad && <View style={styles.content}>
-                <View style={styles.chart}>
-                  <Text style={{ alignSelf: 'center', color: 'white' }}>
-                    Sleeping Chart
-                </Text>
+              sad &&
+              <View style={styles.content}>
+                <LineGraph
+                  graphTitle={'Sleeping hours'}
+                  data={linedata}
+                />
 
-                  <LineChart
-                    data={linedata}
-                    width={Dimensions.get('window').width - 20} // from react-native
-                    height={220}
-                    yAxisLabel={'$'}
-                    chartConfig={{
-                      backgroundColor: '#e26a00',
-                      backgroundGradientFrom: '#fb8c00',
-                      backgroundGradientTo: '#ffa726',
-                      decimalPlaces: 2, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      style: {
-                        borderRadius: 16
-                      }
-                    }}
-                    bezier
-                    style={{
-                      marginVertical: 8,
-                      borderRadius: 16
-                    }}
-                  />
-                </View>
+                <BarGraph 
+                  graphTitle={'Morning Caffeine Intake'}
+                  data={cafSadMorning}
+                />
 
-                <View style={styles.chart}>
-                  <Text style={{ alignSelf: 'center', color: 'white' }}>
-                    Sleeping Chart
-                </Text>
+                <BarGraph 
+                  graphTitle={'Afternoon Caffeine Intake'}
+                  data={cafSadAfternoon}
+                />
 
-                  <LineChart
-                    data={linedata}
-                    width={Dimensions.get('window').width - 20} // from react-native
-                    height={220}
-                    yAxisLabel={'$'}
-                    chartConfig={{
-                      backgroundColor: '#e26a00',
-                      backgroundGradientFrom: '#fb8c00',
-                      backgroundGradientTo: '#ffa726',
-                      decimalPlaces: 2, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      style: {
-                        borderRadius: 16
-                      }
-                    }}
-                    bezier
-                    style={{
-                      marginVertical: 8,
-                      borderRadius: 16
-                    }}
-                  />
-                </View>
+                <BarGraph 
+                  graphTitle={'Evening Caffeine Intake'}
+                  data={cafSadEvening}
+                />
+
               </View>
+
+
             }
 
             {
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   savedTips: {
     marginTop: 20,
     color: 'black',
-  }, 
+  },
   chart: {
     marginBottom: 50,
     marginTop: 25,

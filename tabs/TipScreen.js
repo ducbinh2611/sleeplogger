@@ -21,7 +21,9 @@ class TipScreen extends React.Component {
     // }
     
     handleSaveButton = () => {
-        AsyncStorage.setItem('tip', JSON.stringify(true)).then(() => alert('done'))
+        AsyncStorage.setItem('cm', JSON.stringify(true))
+            .then(() => alert('Saved successfully'))
+            .catch(err => console.error(err))
     }
     // refresh tip?
 

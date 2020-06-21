@@ -52,8 +52,15 @@ class SavedTipScreen extends React.Component {
         })
     }
 
+    uploadSource = (l) => {
+        this.setState({
+            source: l.subtitle
+        })
+    }
+
     checkEmpty = () => {
-        AsyncStorage.getItem('tip').then(token => {
+        AsyncStorage.getItem('cm').then(token => {
+            console.warn(token)
             if (token === 'true') {
                 this.setState({
                     empty: false
@@ -67,8 +74,8 @@ class SavedTipScreen extends React.Component {
     }
 
     truncateString = (message) => {
-        if (message.length > 40) {
-            return message.substring(0, 40) + '...'
+        if (message.length > 35) {
+            return message.substring(0, 35) + '...'
         } else {
             return message
         }
@@ -135,6 +142,7 @@ class SavedTipScreen extends React.Component {
                                             subtitle={l.subtitle}
                                             onPress={() => {
                                                 this.uploadMessage(l);
+                                                this.uploadSource(l);
                                                 this.turnOnModal();
                                             }
                                             }
@@ -142,7 +150,11 @@ class SavedTipScreen extends React.Component {
                                             contentContainerStyle={null}
 
 
-                                        />
+                                        > 
+                                            <TouchableOpacity>
+                                                <Text> here </Text>
+                                            </TouchableOpacity>
+                                        </ListItem>
                                     </View>
                                 ))
                             }
@@ -152,7 +164,8 @@ class SavedTipScreen extends React.Component {
                             <TipPopUp
                                 visible={this.state.visible}
                                 onPress={() => { this.setState({ visible: false }) }}
-                                message={this.state.message} />
+                                message={this.state.message}
+                                source={this.state.source} />
                         </View>}
                 </ScrollView>
             </LinearGradient>

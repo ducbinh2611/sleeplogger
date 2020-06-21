@@ -22,11 +22,10 @@ class TipPopUp extends React.Component {
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
                             <Text style={styles.modalText}> {this.props.message} </Text>
-
+                            <Text style={styles.source}> From {this.props.source} </Text>
                             <TouchableHighlight
                                 style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                                onPress={() => {this.props.onPress();
-                                                console.warn('inside ' + this.props.visible); }}
+                                onPress={this.props.onPress}
                                 
                             >
                                 <Text style={styles.textStyle}>Go back</Text>
@@ -50,7 +49,8 @@ const styles = StyleSheet.create({
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
-        padding: 35,
+        paddingVertical: 35,
+        width: '80%',
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -75,7 +75,15 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: "center"
+    },
+    source: {
+        fontSize: 10,
+        color: 'gray',
+        textAlign: 'left',
+        marginBottom: 10,
     }
+
+
 });
 
 export default TipPopUp;
