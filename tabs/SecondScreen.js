@@ -29,7 +29,10 @@ export default class SecondScreen extends React.Component {
     tabBarLabel: 'Data',
     tabBarIcon: ({ color }) => (
       <Icon name='ios-stats' color={color} size={20} />
-    )
+    ),
+    headerStyle: {
+      backgroundColor: '#9C51B6'
+  },
   }
 
   state = {

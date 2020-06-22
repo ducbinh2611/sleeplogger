@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Button, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   LineChart,
   BarChart,
@@ -44,7 +44,7 @@ const cafSadAfternoon = {
   ],
 };
 
-const cafSadEvening= {
+const cafSadEvening = {
   labels: ['None', 'Low', 'Meidum', 'High'],
   datasets: [
     {
@@ -119,12 +119,14 @@ export default class DataScreen extends React.Component {
   render() {
     const { sad, neutral, happy } = this.state
     return (
-      <LinearGradient style={{ flex: 1 }} colors={['#090E2C', '#5220AE']}>
+      <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
         <ScrollView>
 
           <View style={styles.container}>
-            <Button title='View saved tips'
-              onPress={this.handleTipButton} />
+            <TouchableOpacity onPress={this.handleTipButton}>
+              <Text style={styles.goBackBut}> View your saved tips </Text>
+            </TouchableOpacity>
+
             <Text style={styles.headerText}> View day with wake up feeling of </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
@@ -146,17 +148,17 @@ export default class DataScreen extends React.Component {
                   data={linedata}
                 />
 
-                <BarGraph 
+                <BarGraph
                   graphTitle={'Morning Caffeine Intake'}
                   data={cafSadMorning}
                 />
 
-                <BarGraph 
+                <BarGraph
                   graphTitle={'Afternoon Caffeine Intake'}
                   data={cafSadAfternoon}
                 />
 
-                <BarGraph 
+                <BarGraph
                   graphTitle={'Evening Caffeine Intake'}
                   data={cafSadEvening}
                 />
@@ -217,6 +219,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 50,
+    marginBottom: 50,
     alignSelf: 'center'
   },
   savedTips: {
@@ -226,6 +229,13 @@ const styles = StyleSheet.create({
   chart: {
     marginBottom: 50,
     marginTop: 25,
+  },
+  goBackBut: {
+    marginTop: 20,
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+    alignSelf: 'center'
   }
 
 })

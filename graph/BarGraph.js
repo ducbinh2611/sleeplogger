@@ -14,7 +14,7 @@ class BarGraph extends React.Component {
         return (
 
             <View style={styles.chart}>
-                <Text style={{ alignSelf: 'center', color: 'white' }}>
+                <Text style={styles.headerText}>
                     {this.props.graphTitle}
                 </Text>
 
@@ -63,11 +63,9 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     headerText: {
+        alignSelf: 'center', 
         color: 'white',
-        marginTop: 60,
-        fontSize: 20,
         fontWeight: 'bold',
-        alignSelf: 'center',
     },
     statusBar: {
         marginLeft: 100,
@@ -88,9 +86,9 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     chart: {
-        marginBottom: 50,
+        marginBottom: 20,
         marginTop: 25,
-    }
+    },
 
 })
 

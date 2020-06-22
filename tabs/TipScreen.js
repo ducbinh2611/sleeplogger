@@ -8,22 +8,59 @@ class TipScreen extends React.Component {
     static navigationOptions = {
         tabBarIcon: ({ color }) => (
             <Icon name={'like2'} size={20} />
-        )
+        ),
+        headerStyle: {
+            backgroundColor: '#9C51B6'
+        },
     }
 
     state = {
-        message: 'This is a test for the tip message being displayedadasdasdgasyudfgasyudfgayudfasytdfvasytdfastydcasytfdytasfdasytfdtyasfy',
-        source: 'source',
+        message: '',
+        source: '',
     }
 
-    // componentDidMount = () => {
+    componentWillMount() {
+        this.getTip()
+    }
 
-    // }
-    
+    getTip = () => {
+        fetch('http://sleep-logger-dev.herokuapp.com/get_tips', {
+            method: 'GET',
+				headers: {
+					Accept: "application/json, text/plain, */*",
+					"Content-Type": "application/json",
+				}
+        })
+        .then(res => res.json())
+        .then(res => 
+            {
+                this.setState({
+                    message: res.tip.content
+                })
+            }
+        )
+        .catch(err => console.error(err))
+    }
+
     handleSaveButton = () => {
-        AsyncStorage.setItem('cm', JSON.stringify(true))
-            .then(() => alert('Saved successfully'))
+        AsyncStorage.getItem('token').then(token => {
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/tips', {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                    tip: {
+                        content: this.state.message,
+                    }
+                })
+            }
+            )
+            .then(() => alert('Saved tip successfully'))
             .catch(err => console.error(err))
+        })
     }
     // refresh tip?
 
@@ -31,7 +68,7 @@ class TipScreen extends React.Component {
         return (
 
             
-                <LinearGradient style={{flex : 1}} colors={['#090E2C', '#5220AE']}>
+                <LinearGradient style={{flex : 1}} colors={['#9C51B6', '#5946B2']}>
                     <View style={styles.header}>
                         <Icon name={'aliwangwang-o1'} color={'orange'} size={30} />
                         <Text style={styles.textHeader}> Do you know? </Text>
@@ -108,7 +145,7 @@ const styles = StyleSheet.create({
     },
     saveButtonText: {
         fontSize: 15,
-        color: 'blue',
+        color: '#F3D0EB',
     }
 
 

@@ -14,7 +14,10 @@ class TargetScreen extends React.Component {
         tabBarLabel: 'Target',
         tabBarIcon: ({ color }) => (
             <Icon name='bell' color={color} size={20} />
-        )
+        ),
+        headerStyle: {
+            backgroundColor: '#090E2C'
+        },
 
     }
 

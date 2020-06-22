@@ -21,7 +21,10 @@ export default class FirstScreen extends React.Component {
             <Icon name={'book'} size={26}/>
 
 
-        )    
+        ),
+        headerStyle: {
+            backgroundColor: '#090E2C'
+        },    
     }
 
     state = {

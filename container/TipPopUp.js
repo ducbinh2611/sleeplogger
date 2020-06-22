@@ -22,7 +22,7 @@ class TipPopUp extends React.Component {
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
                             <Text style={styles.modalText}> {this.props.message} </Text>
-                            <Text style={styles.source}> From {this.props.source} </Text>
+                            {/* <Text style={styles.source}> From {this.props.source} </Text> */}
                             <TouchableHighlight
                                 style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                                 onPress={this.props.onPress}

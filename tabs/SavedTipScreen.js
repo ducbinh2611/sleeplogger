@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, Button, Dimensions, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Button, Dimensions, TouchableOpacity, RefreshControl } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import TipPopUp from '../container/TipPopUp';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-community/async-storage';
+let a = 0;
 
 class SavedTipScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
@@ -16,17 +17,49 @@ class SavedTipScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            list: [],
             message: '',
             visible: false,
-            empty: true,
+            empty: false,
+            refreshing: false,
         }
     }
 
     componentWillMount() {
-        console.warn('here')
-        this.checkEmpty()
+        this.getTips()
     }
 
+    getTips = () => {
+        AsyncStorage.getItem('token').then(token => {
+            //console.warn(token);
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/tips', {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+            }
+            )
+                .then((res) => (res.json()))
+                .then(res => this.setState({
+                    list: res
+                }))
+                .catch(err => console.error(err))
+        })
+    }
+
+    refreshFunction = () => {
+        this.setState({
+            refreshing: true
+        })
+        this.setState({
+            empty: !this.state.empty
+        })
+        this.setState({
+            refreshing: false,
+        })
+    }
 
     handleBackButton = () => {
         this.props.navigation.navigate('DataScreen')
@@ -48,7 +81,7 @@ class SavedTipScreen extends React.Component {
 
     uploadMessage = (l) => {
         this.setState({
-            message: l.name
+            message: l.content
         })
     }
 
@@ -95,8 +128,10 @@ class SavedTipScreen extends React.Component {
         ]
         return (
 
-            <LinearGradient style={{ flex: 1 }} colors={['#090E2C', '#5220AE']}>
-                <ScrollView>
+            <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
+                <ScrollView refreshControl={
+                    <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
+                }>
                     {this.state.empty &&
                         <View style={styles.emptyContainer}>
                             <View style={styles.emptyTextContainer}>
@@ -120,7 +155,10 @@ class SavedTipScreen extends React.Component {
                             </View>
 
                             <View style={styles.buttonContainer}>
-                                <Button title='Go back' onPress={this.handleBackButton} />
+                                <TouchableOpacity onPress={this.handleBackButton}>
+                                    <Text style={styles.goBackBut}> Go back </Text>
+                                </TouchableOpacity>
+
                             </View>
                         </View>
                     }
@@ -131,18 +169,19 @@ class SavedTipScreen extends React.Component {
 
 
                             {
-                                list.map((l) => (
+
+                                this.state.list.map((l) => (
                                     <View
                                         style={styles.listContainer}
 
                                     >
                                         <ListItem
-                                            key={l.name}
-                                            title={this.truncateString(l.name)}
-                                            subtitle={l.subtitle}
+                                            key={l.id}
+                                            title={this.truncateString(l.content)}
+
                                             onPress={() => {
                                                 this.uploadMessage(l);
-                                                this.uploadSource(l);
+                                                //this.uploadSource(l);
                                                 this.turnOnModal();
                                             }
                                             }
@@ -150,16 +189,16 @@ class SavedTipScreen extends React.Component {
                                             contentContainerStyle={null}
 
 
-                                        > 
-                                            <TouchableOpacity>
-                                                <Text> here </Text>
-                                            </TouchableOpacity>
+                                        >
+                                            
                                         </ListItem>
                                     </View>
                                 ))
                             }
 
-                            <Button title='Go back' onPress={this.handleBackButton} />
+                            <TouchableOpacity onPress={this.handleBackButton}>
+                                <Text style={styles.goBackBut}> Go back </Text>
+                            </TouchableOpacity>
 
                             <TipPopUp
                                 visible={this.state.visible}
@@ -218,8 +257,10 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: 'white',
         fontWeight: 'bold',
+    },
+    goBackBut: {
+        fontSize: 18,
+        color: 'white',
     }
-
-
 })
 export default SavedTipScreen;

@@ -89,9 +89,7 @@ MainScreen.navigationOptions = {
     headerTitleStyle: {
         color: 'white'
     },
-    headerStyle: {
-        backgroundColor: '#090E2C'
-    },
+
     //header: null,
     //headerMode: 'none'
 };
