@@ -45,6 +45,7 @@ class SavedTipScreen extends React.Component {
                 .then(res => this.setState({
                     list: res
                 }))
+                //.then(() => console.warn(this.state.list))
                 .catch(err => console.error(err))
         })
     }
@@ -53,9 +54,7 @@ class SavedTipScreen extends React.Component {
         this.setState({
             refreshing: true
         })
-        this.setState({
-            empty: !this.state.empty
-        })
+        this.getTips()
         this.setState({
             refreshing: false,
         })
@@ -115,24 +114,24 @@ class SavedTipScreen extends React.Component {
     }
 
     render() {
-        const list = [
-            {
-                name: 'Amy Farhadsahdusihd uiasdhsaiudhsidb hasuydgasyudgsauygdasuydgsayu',
-                subtitle: 'National Health Centre'
-            },
-            {
-                name: 'Chris Jackson',
-                subtitle: 'National Health Centre'
-            },
-            // more items
-        ]
+        // const list = [
+        //     {
+        //         name: 'Amy Farhadsahdusihd uiasdhsaiudhsidb hasuydgasyudgsauygdasuydgsayu',
+        //         subtitle: 'National Health Centre'
+        //     },
+        //     {
+        //         name: 'Chris Jackson',
+        //         subtitle: 'National Health Centre'
+        //     },
+        //     // more items
+        // ]
         return (
 
             <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
                 <ScrollView refreshControl={
                     <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
                 }>
-                    {this.state.empty &&
+                    {this.state.list.length === 0 &&
                         <View style={styles.emptyContainer}>
                             <View style={styles.emptyTextContainer}>
                                 <Text style={styles.emptyText}>
@@ -149,21 +148,16 @@ class SavedTipScreen extends React.Component {
                             <View style={styles.buttonContainer}>
 
                                 <Text style={styles.buttonText}>
-                                    Go discover more at Tip
+                                    Discover more at Tip
                                 </Text>
 
                             </View>
 
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity onPress={this.handleBackButton}>
-                                    <Text style={styles.goBackBut}> Go back </Text>
-                                </TouchableOpacity>
-
-                            </View>
+                            
                         </View>
                     }
 
-                    {!this.state.empty &&
+                    {!this.state.list.length !== 0 &&
                         <View style={styles.container}>
 
 
@@ -190,13 +184,15 @@ class SavedTipScreen extends React.Component {
 
 
                                         >
-                                            
+
                                         </ListItem>
                                     </View>
                                 ))
+
+
                             }
 
-                            <TouchableOpacity onPress={this.handleBackButton}>
+                            <TouchableOpacity style={{marginTop: 15, marginBottom: 50,}} onPress={this.handleBackButton}>
                                 <Text style={styles.goBackBut}> Go back </Text>
                             </TouchableOpacity>
 
@@ -207,7 +203,7 @@ class SavedTipScreen extends React.Component {
                                 source={this.state.source} />
                         </View>}
                 </ScrollView>
-            </LinearGradient>
+            </LinearGradient >
 
 
 

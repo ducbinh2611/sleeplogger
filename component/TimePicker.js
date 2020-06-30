@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }, 
     header: {
-        fontSize: 20,
+        fontSize: 18,
         color: 'white',
     },
     options: {

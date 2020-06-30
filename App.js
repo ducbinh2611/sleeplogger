@@ -4,13 +4,15 @@ import SignUpContainer from './container/SignUpContainer';
 import HomeContainer from './container/HomeContainer';
 import LogInContainer from './container/LogInContainer';
 import MainScreen from './tabs/MainScreen';
-
+import DataScreen from './tabs/DataScreen';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
 export default class App extends React.Component {
     static navigationOptions = {
         title: "Home",
     }
+
+
     render() {
         return (
             <View style={styles.container}>
@@ -39,5 +41,8 @@ const NavigationApp =  StackNavigator({
     MainScreen: {
         screen: MainScreen
     },
+    DataScreen: {
+        screen: DataScreen
+    }
 });
 

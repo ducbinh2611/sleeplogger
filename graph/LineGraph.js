@@ -20,10 +20,12 @@ class LineGraph extends React.Component {
         </Text>
 
         <LineChart
+          yAxisLabel={this.props.yAxisLabel}
+          xAxisLabel={this.props.xAxisLabel}
           data={this.props.data}
           width={Dimensions.get('window').width - 20} // from react-native
           height={220}
-          //yAxisLabel={'$'}
+          xAxisLabel={this.props.xAxisLabel}
           chartConfig={{
             backgroundColor: '#e26a00',
             backgroundGradientFrom: '#fb8c00',
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   headerText: {
-    alignSelf: 'center', 
+    alignSelf: 'center',
     color: 'white',
     fontWeight: 'bold',
   },

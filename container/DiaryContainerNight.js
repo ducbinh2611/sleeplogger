@@ -9,9 +9,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 class DiaryContainerNight extends React.Component {
     static navigationOptions = {
-        tabBarLabel: 'Night',
-        tabBarIcon: ({ color }) => (
-            <Icon name='moon' color={'yellow'} size={20} />
+        tabBarLabel: <View/>,
+        tabBarIcon: ({ tintColor }) => (
+            <Icon name='moon' color={tintColor} size={tintColor === 'white' ? 20 : 26} />
         )
     }
 
@@ -44,6 +44,24 @@ class DiaryContainerNight extends React.Component {
 
     reset = () => {
         this.setState({
+            q1o1: false,
+            q1o2: false,
+            q1o3: false,
+            q1o4: false,
+            q2o1: false,
+            q2o2: false,
+            q2o3: false,
+            q2o4: false,
+            q3o1: false,
+            q3o2: false,
+            q3o3: false,
+            q3o4: false,
+            q4o1: false,
+            q4o2: false,
+            q5o1: false,
+            q5o2: false,
+            q6o1: false,
+            q6o2: false,
             napMorning: null,
             napAfternoon: null,
             napEvening: null,
@@ -348,8 +366,8 @@ class DiaryContainerNight extends React.Component {
 
             }
             )
-            .then(() => this.reset())
-            .catch(err => console.error(err))
+                .then(() => this.reset())
+                .catch(err => console.error(err))
         })
         //.then(res => res.text()).then(res => console.warn('res ' + res))
         // console.warn('bed time ' + this.state.sleptTime)
@@ -446,8 +464,8 @@ class DiaryContainerNight extends React.Component {
                             <TouchableOpacity
                                 style={styles.button}
                                 onPress={() => {
-                                    if (napMorning !== null && napAfternoon !==null && napEvening !== null
-                                        && caffeineMorning!== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
+                                    if (napMorning !== null && napAfternoon !== null && napEvening !== null
+                                        && caffeineMorning !== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
                                         // console.warn('nap morn ' + napMorning);
                                         // console.warn('nap aft ' + napAfternoon);
                                         // console.warn('nap even ' + napEvening);

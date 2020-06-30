@@ -1,18 +1,11 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from 'react-native-chart-kit';
-import Icon from 'react-native-vector-icons/Ionicons';
 import ChoiceButton from '../component/ChoiceButton';
 import LinearGradient from 'react-native-linear-gradient';
 import LineGraph from '../graph/LineGraph';
 import BarGraph from '../graph/BarGraph';
+import { NavigationActions } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const linedata = {
   labels: ['3.0', '3.5', '4.5', '5.0', '5.5'],
@@ -24,8 +17,88 @@ const linedata = {
   ],
 };
 
+const sleepNeut = {
+  labels: ['5.5', '6.5', '7.0', '7.5', '8.0'],
+  datasets: [
+    {
+      data: [10, 24, 8, 10, 12],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const sleepHappy = {
+  labels: ['6.5', '7.5', '8.0', '8.5', '9.0'],
+  datasets: [
+    {
+      data: [10, 4, 20, 0, 12],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafNeutMorning = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [0, 0, 10, 8],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafNeutAfternoon = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [18, 0, 0, 0],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafNeutEvening = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [10, 0, 8, 0],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafHappyMorning = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [0, 0, 8, 10],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafHappyAfternoon = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [10, 8, 0, 0],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
+const cafHappyEvening = {
+  labels: ['None', 'Low', 'Medium', 'High'],
+  datasets: [
+    {
+      data: [18, 0, 0, 0],
+      strokeWidth: 2, // optional
+    },
+  ],
+};
+
 const cafSadMorning = {
-  labels: ['None', 'Low', 'Meidum', 'High'],
+  labels: ['None', 'Low', 'Medium', 'High'],
   datasets: [
     {
       data: [0, 4, 1, 2],
@@ -35,7 +108,7 @@ const cafSadMorning = {
 };
 
 const cafSadAfternoon = {
-  labels: ['None', 'Low', 'Meidum', 'High'],
+  labels: ['None', 'Low', 'Medium', 'High'],
   datasets: [
     {
       data: [0, 4, 12, 15],
@@ -45,7 +118,7 @@ const cafSadAfternoon = {
 };
 
 const cafSadEvening = {
-  labels: ['None', 'Low', 'Meidum', 'High'],
+  labels: ['None', 'Low', 'Medium', 'High'],
   datasets: [
     {
       data: [0, 4, 1, 25],
@@ -116,6 +189,21 @@ export default class DataScreen extends React.Component {
     this.props.navigation.navigate('SavedTipScreen')
   }
 
+  handleLogOutButton = () => {
+    AsyncStorage.removeItem("token")
+      .then(res => {
+        let action = NavigationActions.reset({
+          index: 0,
+          key: null,
+          actions: [
+            NavigationActions.navigate({ routeName: 'LogInContainer' })
+          ]
+        });
+
+        this.props.navigation.dispatch(action);
+      })
+  }
+
   render() {
     const { sad, neutral, happy } = this.state
     return (
@@ -125,6 +213,10 @@ export default class DataScreen extends React.Component {
           <View style={styles.container}>
             <TouchableOpacity onPress={this.handleTipButton}>
               <Text style={styles.goBackBut}> View your saved tips </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => null}>
+              <Text style={styles.goBackBut}> Log Out </Text>
             </TouchableOpacity>
 
             <Text style={styles.headerText}> View day with wake up feeling of </Text>
@@ -144,21 +236,25 @@ export default class DataScreen extends React.Component {
               sad &&
               <View style={styles.content}>
                 <LineGraph
+                  xAxisLabel={' hrs'}
                   graphTitle={'Sleeping hours'}
                   data={linedata}
                 />
 
                 <BarGraph
+
                   graphTitle={'Morning Caffeine Intake'}
                   data={cafSadMorning}
                 />
 
                 <BarGraph
+
                   graphTitle={'Afternoon Caffeine Intake'}
                   data={cafSadAfternoon}
                 />
 
                 <BarGraph
+
                   graphTitle={'Evening Caffeine Intake'}
                   data={cafSadEvening}
                 />
@@ -170,13 +266,59 @@ export default class DataScreen extends React.Component {
 
             {
               neutral && <View style={styles.content}>
-                <Text> neutral </Text>
+                <LineGraph
+                  xAxisLabel={' hrs'}
+                  graphTitle={'Sleeping hours'}
+                  data={sleepNeut}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Morning Caffeine Intake'}
+                  data={cafNeutMorning}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Afternoon Caffeine Intake'}
+                  data={cafNeutAfternoon}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Evening Caffeine Intake'}
+                  data={cafNeutEvening}
+                />
+
               </View>
             }
 
             {
               happy && <View style={styles.content}>
-                <Text> happy </Text>
+                <LineGraph
+                  xAxisLabel={' hrs'}
+                  graphTitle={'Sleeping hours'}
+                  data={sleepHappy}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Morning Caffeine Intake'}
+                  data={cafHappyMorning}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Afternoon Caffeine Intake'}
+                  data={cafHappyAfternoon}
+                />
+
+                <BarGraph
+
+                  graphTitle={'Evening Caffeine Intake'}
+                  data={cafHappyEvening}
+                />
+
               </View>
             }
 
@@ -220,7 +362,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 50,
     marginBottom: 50,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   savedTips: {
     marginTop: 20,
@@ -235,7 +377,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
-    alignSelf: 'center'
+    alignSelf: 'center',
   }
 
 })

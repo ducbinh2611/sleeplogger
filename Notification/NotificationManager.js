@@ -83,7 +83,7 @@ class NotificationManager {
             PushNotificationIOS.scheduleLocalNotification({
                 fireDate: date.getTime(),
                 alertTitle: "Sleep Logger",
-                alertBody: "Get ready to sleep in 30 minutes",
+                alertBody: "Hi! Starting airing the bedroom, because we are going to sleep in half an hour",
                 alertAction: 'view',
             })
         } 

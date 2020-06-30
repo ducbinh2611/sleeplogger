@@ -13,6 +13,7 @@ import ChoiceButton from '../component/ChoiceButton';
 import { StackNavigator } from 'react-navigation';
 import DataScreen from './DataScreen';
 import SavedTipScreen from './SavedTipScreen';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const linedata = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -27,8 +28,8 @@ const linedata = {
 export default class SecondScreen extends React.Component {
   static navigationOptions = {
     tabBarLabel: 'Data',
-    tabBarIcon: ({ color }) => (
-      <Icon name='ios-stats' color={color} size={20} />
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name='ios-stats' color={tintColor} size={20} />
     ),
     headerStyle: {
       backgroundColor: '#9C51B6'
@@ -57,6 +58,13 @@ export default class SecondScreen extends React.Component {
     this.setState({
       happy: !this.state.happy
     })
+  }
+
+  doLogOut = () => {
+    AsyncStorage.removeItem("token")
+      .then(res => {
+        this.props.navigation.navigate("")
+      })
   }
   render() {
     

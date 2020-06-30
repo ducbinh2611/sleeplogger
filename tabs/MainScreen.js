@@ -20,11 +20,11 @@ var MainScreen = TabNavigator({
     tabBarOptions: {
         activeTintColor: 'orange',
         // activeBackgroundColor: 'grey',
-        inactiveTintColor: 'gray',
+        inactiveTintColor: 'black',
         // inactiveBackgroundColor: 'green',
         labelStyle: {
             fontSize: 16,
-            padding: 5,
+            padding: 2,
         },
         style: {
             backgroundColor: 'white',

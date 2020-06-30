@@ -1,13 +1,13 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class TipScreen extends React.Component {
     static navigationOptions = {
-        tabBarIcon: ({ color }) => (
-            <Icon name={'like2'} size={20} />
+        tabBarIcon: ({ tintColor }) => (
+            <Icon name={'like2'} color={tintColor} size={20} />
         ),
         headerStyle: {
             backgroundColor: '#9C51B6'
@@ -17,29 +17,40 @@ class TipScreen extends React.Component {
     state = {
         message: '',
         source: '',
+        refreshing: false,
     }
 
     componentWillMount() {
         this.getTip()
     }
 
+    refreshFunction = () => {
+        this.setState({
+            refreshing: true
+        })
+        this.getTip()
+        this.setState({
+            refreshing: false,
+        })
+    }
+
     getTip = () => {
         fetch('http://sleep-logger-dev.herokuapp.com/get_tips', {
             method: 'GET',
-				headers: {
-					Accept: "application/json, text/plain, */*",
-					"Content-Type": "application/json",
-				}
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+            }
         })
-        .then(res => res.json())
-        .then(res => 
-            {
+            .then(res => res.json())
+            .then(res => {
+                
                 this.setState({
                     message: res.tip.content
                 })
             }
-        )
-        .catch(err => console.error(err))
+            )
+            .catch(err => console.error(err))
     }
 
     handleSaveButton = () => {
@@ -58,8 +69,8 @@ class TipScreen extends React.Component {
                 })
             }
             )
-            .then(() => alert('Saved tip successfully'))
-            .catch(err => console.error(err))
+                .then(() => alert('Saved tip successfully'))
+                .catch(err => console.error(err))
         })
     }
     // refresh tip?
@@ -67,8 +78,11 @@ class TipScreen extends React.Component {
     render() {
         return (
 
-            
-                <LinearGradient style={{flex : 1}} colors={['#9C51B6', '#5946B2']}>
+
+            <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
+                <ScrollView refreshControl={
+                    <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
+                }>
                     <View style={styles.header}>
                         <Icon name={'aliwangwang-o1'} color={'orange'} size={30} />
                         <Text style={styles.textHeader}> Do you know? </Text>
@@ -95,8 +109,9 @@ class TipScreen extends React.Component {
                         </View>
 
                     </View>
-                </LinearGradient>
-            
+                </ScrollView>
+            </LinearGradient>
+
 
         )
     }
@@ -108,7 +123,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height:500,
+        height: 500,
     },
     header: {
         alignItems: 'center',

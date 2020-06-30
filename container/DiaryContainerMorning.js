@@ -15,9 +15,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 class DiaryContainerMorning extends React.Component {
     static navigationOptions = {
-        tabBarLabel: 'Morning',
-        tabBarIcon: ({ color }) => (
-            <Icon name='sun' color={'yellow'} size={20} />
+        tabBarLabel: <View/>,
+        tabBarIcon: ({ tintColor }) => (
+            <Icon name='sun' color={tintColor} size={tintColor === 'white' ? 20 : 26} />
         )
     }
 

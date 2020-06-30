@@ -63,26 +63,29 @@ class LogInContainer extends React.Component {
 
 
 				})
-			}).then(res => res.json())
+			})
+			.then(res => {const result = res.json();
+							console.warn(result)
+							return result})
 				.then(
 					res => {
-
+						
 						this.setState({
 							loading: false
 						})
+						if (res.token !== undefined) {
+							AsyncStorage.setItem("token", res.token)
+								.then(
+									res => {
+										this.props.navigation.navigate('MainScreen')
+									}
+								).catch(err => console.error(err))
+						} else {
+							console.warn(res)
+							alert("Email or password is incorrect")
+						}
 
-						AsyncStorage.setItem("token", res.token)
-							.then(
-								res => {
-									this.props.navigation.navigate('MainScreen')
-								}
-							)
 
-					},
-					err => {
-
-
-						alert("Email or password is incorrect")
 					}
 
 

@@ -11,14 +11,14 @@ export default class FirstScreen extends React.Component {
     static navigationOptions = {
         
         //tabBarLabel: 'Diary',
-        tabBarIcon: ({color}) => (
+        tabBarIcon: ({ tintColor }) => (
             // <Image
             //     source={require('../images/diary.png')}
             //     style={styles.image}
             // >
 
             // </Image>
-            <Icon name={'book'} size={26}/>
+            <Icon name={'book'} color= {tintColor} size={26}/>
 
 
         ),

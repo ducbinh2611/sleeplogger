@@ -1,6 +1,5 @@
 import React, { Component, useState } from "react";
 import {
-    Alert,
     Modal,
     StyleSheet,
     Text,
@@ -73,6 +72,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     modalText: {
+        fontSize:18,
         marginBottom: 15,
         textAlign: "center"
     },

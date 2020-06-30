@@ -12,8 +12,8 @@ import LinearGradient from 'react-native-linear-gradient';
 class TargetScreen extends React.Component {
     static navigationOptions = {
         tabBarLabel: 'Target',
-        tabBarIcon: ({ color }) => (
-            <Icon name='bell' color={color} size={20} />
+        tabBarIcon: ({ tintColor }) => (
+            <Icon name='bell' color={ tintColor} size={20} />
         ),
         headerStyle: {
             backgroundColor: '#090E2C'

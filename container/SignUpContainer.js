@@ -83,7 +83,8 @@ class SignUpContainer extends React.Component {
 
 			}).then(res => res.json())
 			.then(res => {
-				AsyncStorage.setItem("token", res.token)
+				
+				
 				this.reset()
 			})
 			.catch(err => console.error(err))
@@ -185,6 +186,8 @@ class SignUpContainer extends React.Component {
 									password_confirmation.length
 								) {
 									this.handleSubmitButton()
+								} else {
+									alert('Please key in all data')
 								}
 
 							}}
