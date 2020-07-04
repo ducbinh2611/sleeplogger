@@ -52,7 +52,8 @@ class TargetScreen extends React.Component {
     }
     render() {
         return (
-            <LinearGradient style={{flex : 1}} colors={['#090E2C', '#5220AE']}>
+            //['#090E2C', '#5220AE']
+            <LinearGradient style={{flex : 1}} colors={['#9C51B6', '#5946B2']}>
                 <View
                     style={styles.container}
                 >

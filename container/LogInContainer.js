@@ -27,12 +27,12 @@ class LogInContainer extends React.Component {
 		email: '',
 		password: '',
 		loading: false,
-		passShown: false,
+		passHide: true,
 	};
 
 	handleEyeButton = () => {
 		this.setState({
-			passShown: !this.state.passShown
+			passHide: !this.state.passHide
 		})
 	}
 
@@ -64,9 +64,7 @@ class LogInContainer extends React.Component {
 
 				})
 			})
-			.then(res => {const result = res.json();
-							console.warn(result)
-							return result})
+			.then(res => res.json())
 				.then(
 					res => {
 						
@@ -81,7 +79,6 @@ class LogInContainer extends React.Component {
 									}
 								).catch(err => console.error(err))
 						} else {
-							console.warn(res)
 							alert("Email or password is incorrect")
 						}
 
@@ -99,7 +96,7 @@ class LogInContainer extends React.Component {
 
 		const { navigation } = this.props
 
-		const { loading, email, password, passShown } = this.state
+		const { loading, email, password, passHide } = this.state
 		return (
 			<ImageBackground source={night} style={styles.container}
 
@@ -131,7 +128,7 @@ class LogInContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
-							secureTextEntry={passShown}
+							secureTextEntry={passHide}
 							style={styles.input}
 							placeholder=" Password"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}

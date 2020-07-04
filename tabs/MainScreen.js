@@ -5,14 +5,14 @@ import TargetScreen from './TargetScreen';
 import TipScreen from './TipScreen';
 import { TabNavigator } from 'react-navigation';
 import moment from 'moment';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 
-var MainScreen = TabNavigator({
+var MainScreenStack = TabNavigator({
     Diary: { screen: FirstScreen },
     Target: { screen: TargetScreen },
-    Tip: { screen: TipScreen},
+    Tip: { screen: TipScreen },
     Data: { screen: SecondScreen },
 }, {
     tabBarPosition: 'bottom',
@@ -82,17 +82,77 @@ var MainScreen = TabNavigator({
 //     </NavigationContainer>
 // );
 const date = moment(new Date()).format('MMMM Do YYYY');
+class MainScreen extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: moment(new Date()).format('MMMM Do YYYY'),
+            headerLeft: null,
+            headerRight: (
+                <View style={{ marginRight: 20 }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Alert.alert('Log Out',
+                                'Are you sure you want to log out?',
+                                [{
+                                    text: 'Yes', onPress: () => {
+                                        
+                                        AsyncStorage.removeItem('token')
+                                            .then(() => {
+                                                navigation.navigate('LogInContainer')
+                                            })
+                                            .catch(err => console.error(err))
+                                    }
+                                },
+                                { text: 'No' }])
 
-MainScreen.navigationOptions = {
-    title: date,
-    headerLeft: null,
-    headerTitleStyle: {
-        color: 'white'
-    },
+                        }}
+                    >
+                        <Icon name={'logout'} size={20} color={'white'} />
+                    </TouchableOpacity>
+                </View>
+            ),
+            headerTitleStyle: {
+                color: 'white'
+            },
+            headerStyle: {
+                backgroundColor: '#9C51B6'
+            },
+            screenOptions: {
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
 
-    //header: null,
-    //headerMode: 'none'
-};
+            },
+        }
+    }
+
+
+    render() {
+
+        return (
+            <MainScreenStack />
+        )
+    }
+}
+
+// MainScreen.navigationOptions = {
+//     title: date,
+//     headerLeft: null,
+//     headerRight: (
+//         <Button
+//             onPress={({ props }) => console.warn(props)}
+//             title="Info"
+//             color="white"
+//         />
+//     ),
+//     headerTitleStyle: {
+//         color: 'white'
+//     },
+//     screenOptions: {
+//         gestureEnabled: true,
+//         gestureDirection: "horizontal",
+
+//     },
+// };
 
 
 

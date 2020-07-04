@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button, Image, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { Text, View, Button, Image, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { MateirialIcons } from '@expo/vector-icons';
 import ChoiceButton from '../component/ChoiceButton';
 import DiaryContainerMorning from '../container/DiaryContainerMorning';
@@ -9,8 +9,6 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 export default class FirstScreen extends React.Component {
     static navigationOptions = {
-        
-        //tabBarLabel: 'Diary',
         tabBarIcon: ({ tintColor }) => (
             // <Image
             //     source={require('../images/diary.png')}
@@ -18,35 +16,51 @@ export default class FirstScreen extends React.Component {
             // >
 
             // </Image>
-            <Icon name={'book'} color= {tintColor} size={26}/>
+            <Icon name={'book'} color={tintColor} size={26} />
 
 
         ),
         headerStyle: {
             backgroundColor: '#090E2C'
-        },    
+        },
     }
 
-    state = {
-        popUpVisible: true
-    }
-
-    closePopUp = () => this.setState({
-        popUpVisible: false
-    })
+    DiaryStack = TabNavigator({
+        Morning: { screen: DiaryContainerMorning },
+        Night: { screen:DiaryContainerNight },
+        
+    }, {
+        tabBarPosition: 'top',
+        tabBarOptions: {
+            activeTintColor: '#C67C3F',
+            //activeBackgroundColor: 'grey',
+            inactiveTintColor: 'white',
+            // inactiveBackgroundColor: 'green',
+            labelStyle: {
+                fontSize: 16,
+                padding: 5,
+            },
+            style: {
+                backgroundColor: '#9C51B6',
+                //position: 'absolute',
+                //borderTopRightRadius: 20,
+                //borderTopLeftRadius: 20,
+                // left: 0,
+                // top: 10,
+                // right: 0
+            }
+        },
+    });
 
     render() {
-        const { popUpVisible } = this.state
-        
-        return <MainScreen />
-        
-        }
+        return <this.DiaryStack />
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#291D54',
-        
+
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -60,33 +74,7 @@ const styles = StyleSheet.create({
     }
 });
 
-var MainScreen = TabNavigator({
-    Diary: {screen: DiaryContainerMorning},
-    Data: {screen: DiaryContainerNight},
-}, {
-    tabBarPosition: 'top',
-    
-    tabBarOptions: {
-        activeTintColor: '#C67C3F',
-        //activeBackgroundColor: 'grey',
-         inactiveTintColor: 'white',
-        // inactiveBackgroundColor: 'green',
-        labelStyle: {
-            fontSize: 16,
-            padding: 5,
-        },
-        style: {
-            backgroundColor: '#090E2C',
-            //position: 'absolute',
-            //borderTopRightRadius: 20,
-            //borderTopLeftRadius: 20,
-            // left: 0,
-            // top: 10,
-            // right: 0
-        }
-    },
-    
-});
+
 
 {/* <Modal
                     transparent={true}

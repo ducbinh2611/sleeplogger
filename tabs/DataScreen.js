@@ -4,7 +4,7 @@ import ChoiceButton from '../component/ChoiceButton';
 import LinearGradient from 'react-native-linear-gradient';
 import LineGraph from '../graph/LineGraph';
 import BarGraph from '../graph/BarGraph';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const linedata = {
@@ -186,21 +186,20 @@ export default class DataScreen extends React.Component {
   }
 
   handleTipButton = () => {
+    console.warn(this.props.navigation)
     this.props.navigation.navigate('SavedTipScreen')
   }
 
   handleLogOutButton = () => {
     AsyncStorage.removeItem("token")
       .then(res => {
-        let action = NavigationActions.reset({
-          index: 0,
-          key: null,
-          actions: [
-            NavigationActions.navigate({ routeName: 'LogInContainer' })
-          ]
-        });
-
-        this.props.navigation.dispatch(action);
+        // const navigateAction = StackActions.reset({
+        //   index: 0,
+        //   key: null,
+        //   actions: [NavigationActions.navigate({ routeName: 'LogInContainer' })]
+        // })
+        console.warn(this.props.navigation.popToTop())
+        this.props.navigation.popToTop()
       })
   }
 
@@ -213,10 +212,6 @@ export default class DataScreen extends React.Component {
           <View style={styles.container}>
             <TouchableOpacity onPress={this.handleTipButton}>
               <Text style={styles.goBackBut}> View your saved tips </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => null}>
-              <Text style={styles.goBackBut}> Log Out </Text>
             </TouchableOpacity>
 
             <Text style={styles.headerText}> View day with wake up feeling of </Text>

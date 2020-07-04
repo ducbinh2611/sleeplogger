@@ -27,6 +27,7 @@ class SavedTipScreen extends React.Component {
 
     componentWillMount() {
         this.getTips()
+        console.warn(this.props.navigation.state.key)
     }
 
     getTips = () => {
@@ -61,7 +62,7 @@ class SavedTipScreen extends React.Component {
     }
 
     handleBackButton = () => {
-        this.props.navigation.navigate('DataScreen')
+        this.props.navigation.navigate('Diary')
     }
 
     turnOffModal = () => {

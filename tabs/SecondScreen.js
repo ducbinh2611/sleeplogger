@@ -10,7 +10,7 @@ import {
 } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ChoiceButton from '../component/ChoiceButton';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 import DataScreen from './DataScreen';
 import SavedTipScreen from './SavedTipScreen';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -33,7 +33,7 @@ export default class SecondScreen extends React.Component {
     ),
     headerStyle: {
       backgroundColor: '#9C51B6'
-  },
+    },
   }
 
   state = {
@@ -66,10 +66,15 @@ export default class SecondScreen extends React.Component {
         this.props.navigation.navigate("")
       })
   }
+
+  
+
   render() {
-    
     return (
-      <NavigationPage/>
+      
+      <DataStack  />
+      
+      
     )
   }
 }
@@ -105,7 +110,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 50,
     alignSelf: 'center'
-  }, 
+  },
   savedTips: {
     marginTop: 20,
     color: 'black',
@@ -114,15 +119,16 @@ const styles = StyleSheet.create({
 
 })
 
-const NavigationPage =  StackNavigator({
+const DataStack = StackNavigator({
   DataScreen: {
-      screen: DataScreen
+    screen: DataScreen,
   },
-  SavedTipScreen: { 
-      screen: SavedTipScreen 
+  SavedTipScreen: {
+    screen: SavedTipScreen
   },
-  
+
 });
+
 
 
 

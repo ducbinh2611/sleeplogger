@@ -5,7 +5,8 @@ import HomeContainer from './container/HomeContainer';
 import LogInContainer from './container/LogInContainer';
 import MainScreen from './tabs/MainScreen';
 import DataScreen from './tabs/DataScreen';
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class App extends React.Component {
     static navigationOptions = {
@@ -14,6 +15,7 @@ export default class App extends React.Component {
 
 
     render() {
+        
         return (
             <View style={styles.container}>
                 <NavigationApp />
@@ -41,8 +43,5 @@ const NavigationApp =  StackNavigator({
     MainScreen: {
         screen: MainScreen
     },
-    DataScreen: {
-        screen: DataScreen
-    }
 });
 

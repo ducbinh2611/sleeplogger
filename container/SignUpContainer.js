@@ -22,12 +22,12 @@ class SignUpContainer extends React.Component {
 		password: '',
 		password_confirmation: '',
 		isSignUp: false,
-		passShown: false,
+		passHide: true,
 	};
 
 	handleEyeButton = () => {
 		this.setState({
-			passShown: !this.state.passShown
+			passHide: !this.state.passHide
 		})
 	}
 
@@ -83,8 +83,6 @@ class SignUpContainer extends React.Component {
 
 			}).then(res => res.json())
 			.then(res => {
-				
-				
 				this.reset()
 			})
 			.catch(err => console.error(err))
@@ -96,7 +94,7 @@ class SignUpContainer extends React.Component {
 
 	render() {
 		const { navigation } = this.props;
-		const { name, email, password, password_confirmation, isSignUp, passShown } = this.state;
+		const { name, email, password, password_confirmation, isSignUp, passHide } = this.state;
 		return (
 			<ImageBackground source={night} style={styles.container}
 
@@ -143,7 +141,7 @@ class SignUpContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
-							secureTextEntry={passShown}
+							secureTextEntry={passHide}
 							style={styles.input}
 							placeholder=" Password"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
@@ -162,7 +160,7 @@ class SignUpContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
-							secureTextEntry={passShown}
+							secureTextEntry={passHide}
 							style={styles.input}
 							placeholder=" Confirm Password"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}

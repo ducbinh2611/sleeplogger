@@ -376,12 +376,13 @@ class DiaryContainerNight extends React.Component {
 
     }
     render() {
+        //console.warn(this.props.screenProps.rootNavigation.navigate('LogInContainer'))
         const { napMorning, napAfternoon, napEvening,
             caffeineMorning, caffeineAfternoon, caffeineEvening,
             q1o1, q1o2, q1o3, q1o4, q2o1, q2o2, q2o3, q2o4,
             q3o1, q3o2, q3o3, q3o4, q4o1, q4o2, q5o1, q5o2, q6o1, q6o2 } = this.state
         return (
-            <LinearGradient colors={['#090E2C', '#5220AE']}>
+            <LinearGradient colors={['#9C51B6', '#5946B2']}>
                 <ScrollView>
                     <View style={styles.container}>
 

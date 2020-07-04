@@ -208,7 +208,7 @@ class DiaryContainerMorning extends React.Component {
         const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
 
         return (
-            <LinearGradient colors={['#090E2C', '#5220AE']}>
+            <LinearGradient colors={['#9C51B6', '#5946B2']}>
                 <ScrollView>
                     <View style={styles.container}>
                         <TimePicker
