@@ -16,7 +16,7 @@ var MainScreenStack = TabNavigator({
     Data: { screen: SecondScreen },
 }, {
     tabBarPosition: 'bottom',
-    swipeEnabled: true,
+    swipeEnabled: false,
     tabBarOptions: {
         activeTintColor: 'orange',
         // activeBackgroundColor: 'grey',

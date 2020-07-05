@@ -1,6 +1,15 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    RefreshControl,
+    ActivityIndicator
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -18,6 +27,7 @@ class TipScreen extends React.Component {
         message: '',
         source: '',
         refreshing: false,
+        fetchingData: false,
     }
 
     componentWillMount() {
@@ -35,6 +45,9 @@ class TipScreen extends React.Component {
     }
 
     getTip = () => {
+        this.setState({
+            fetchingData: true,
+        })
         fetch('http://sleep-logger-dev.herokuapp.com/get_tips', {
             method: 'GET',
             headers: {
@@ -44,8 +57,9 @@ class TipScreen extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                
+
                 this.setState({
+                    fetchingData: !this.state.fetchingData,
                     message: res.tip.content
                 })
             }
@@ -89,9 +103,15 @@ class TipScreen extends React.Component {
                     </View>
 
                     <View style={styles.tipBox}>
-                        <Text style={styles.textTip}>
-                            {this.state.message}
-                        </Text>
+                        {!this.state.fetchingData &&
+                            <Text style={styles.textTip}>
+                                {this.state.message}
+                            </Text>
+                        }
+
+                        {this.state.fetchingData &&
+                            <ActivityIndicator />
+                        }
 
                         <View style={{ marginTop: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
                             <Text style={styles.textSource}>

@@ -12,10 +12,11 @@ import ChoiceButton from '../component/ChoiceButton';
 import TimePicker from '../component/TimePicker';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-community/async-storage';
+import SubmitButton from '../component/SubmitButton';
 
 class DiaryContainerMorning extends React.Component {
     static navigationOptions = {
-        tabBarLabel: <View/>,
+        tabBarLabel: <View />,
         tabBarIcon: ({ tintColor }) => (
             <Icon name='sun' color={tintColor} size={tintColor === 'white' ? 20 : 26} />
         )
@@ -29,6 +30,7 @@ class DiaryContainerMorning extends React.Component {
         q2o1: false,
         q2o2: false,
         q2o3: false,
+        submitSuccess: false,
         sleptTime: null,
         wakeUpTime: null,
         ease_of_sleep: -1,
@@ -43,6 +45,7 @@ class DiaryContainerMorning extends React.Component {
             q2o1: false,
             q2o2: false,
             q2o3: false,
+            submitSuccess: true,
             sleptTime: null,
             wakeUpTime: null,
             ease_of_sleep: -1,
@@ -172,41 +175,46 @@ class DiaryContainerMorning extends React.Component {
 
 
     handleSubmitButton = () => {
-        AsyncStorage.getItem('token').then(token => {
-            //console.warn(token);
-            fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
-                method: 'POST',
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    "Content-Type": "application/json",
-                    Authorization: 'Bearer ' + token,
-                },
-                body: JSON.stringify({
-                    morning_entry: {
-                        bed_time: this.state.sleptTime,
-                        wake_up_time: this.state.wakeUpTime,
-                        ease_of_sleep: this.state.ease_of_sleep,
-                        hours_of_sleep: this.calcDate(),
-                        morning_feeling: this.state.morning_feeling,
-                    }
+        const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
+        if (sleptTime !== null
+            && wakeUpTime !== null
+            && ease_of_sleep !== -1
+            && morning_feeling !== -1) {
+            AsyncStorage.getItem('token').then(token => {
+                
+                fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        morning_entry: {
+                            bed_time: this.state.sleptTime,
+                            wake_up_time: this.state.wakeUpTime,
+                            ease_of_sleep: this.state.ease_of_sleep,
+                            hours_of_sleep: this.calcDate(),
+                            morning_feeling: this.state.morning_feeling,
+                        }
 
-                })
+                    })
 
-            }
-            )
-            .then((res) => this.reset())
-            .catch(err => console.error(err))
-        })
-        //.then(res => res.text()).then(res => console.warn('res ' + res))
-        // console.warn('bed time ' + this.state.sleptTime)
-        // console.warn('wake up time ' + this.state.wakeUpTime)
-        // console.warn('ease of sleep ' + this.state.ease_of_sleep)
-
+                }
+                )
+                    .then((res) => this.reset())
+                    .catch(err => console.error(err))
+            })
+            //.then(res => res.text()).then(res => console.warn('res ' + res))
+            // console.warn('bed time ' + this.state.sleptTime)
+            // console.warn('wake up time ' + this.state.wakeUpTime)
+            // console.warn('ease of sleep ' + this.state.ease_of_sleep)
+        } else {
+            alert("Key in all data first")
+        }
     }
 
     render() {
-        const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
-
         return (
             <LinearGradient colors={['#9C51B6', '#5946B2']}>
                 <ScrollView>
@@ -254,25 +262,14 @@ class DiaryContainerMorning extends React.Component {
                         </Question>
 
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity
-                                style={styles.button}
-                                onPress={() => {
-                                    if (sleptTime !== null 
-                                        && wakeUpTime !== null 
-                                        && ease_of_sleep !== -1
-                                        && morning_feeling !== -1) {
-                                        this.handleSubmitButton()
-                                        alert("Submitted successfully")
-                                    } else {
-                                        alert("Key in all data first")
-                                    }
-                                }}
-                            >
-                                <Text style={styles.textInput}>
-                                    Submit
-                        </Text>
-
-                            </TouchableOpacity>
+                            <SubmitButton onPress={this.handleSubmitButton}/>
+                            {this.state.submitSuccess &&
+                                <View style={styles.noti}>
+                                    <Text style={styles.notiText}>
+                                        Submit successfully
+                                    </Text>
+                                </View>    
+                            }
                         </View>
 
                     </View>
@@ -314,6 +311,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
+    noti: {
+        marginTop: 10,
+        marginLeft: 10,
+    },
+    notiText: {
+        fontSize: 16,
+        color:'yellow',
+    }
 
 })
 
