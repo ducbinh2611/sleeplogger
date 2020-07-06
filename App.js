@@ -13,15 +13,42 @@ export default class App extends React.Component {
         title: "Home",
     }
 
+    state={
+        userLogIn: false,
+    }
+
+    componentWillMount() {
+        this.getInitialScreen()
+    }
+
+    getInitialScreen= () => {
+        AsyncStorage.getItem('token')
+            .then(token => {
+                if (token === null) {
+                    console.log('token null')
+                    this.setState({
+                        userLogIn: false,
+                    })
+                } else {
+                    console.log('token not null')
+                    this.setState({
+                        userLogIn: true,
+                    })
+                }
+            })
+            .catch(err => console.error(err))
+    }
 
     render() {
-        
-        return (
-            <View style={styles.container}>
-                <NavigationApp />
-            </View>
-        )
+        if (this.state.userLogIn === false) {
+            return (
+                <UserNotLogIn />
+            )
+        } else {
+            return <UserLogIn />
+        }
     }
+    
 
 }
 
@@ -32,7 +59,8 @@ const styles = StyleSheet.create({
     }
 })
 
-const NavigationApp =  StackNavigator({
+
+const UserNotLogIn =  StackNavigator({
     
     LogInContainer: { 
         screen: LogInContainer 
@@ -43,5 +71,23 @@ const NavigationApp =  StackNavigator({
     MainScreen: {
         screen: MainScreen
     },
-});
+ }, {
+        initialRouteName: 'LogInContainer'
+    }
+);
 
+const UserLogIn =  StackNavigator({
+    MainScreen: {
+        screen: MainScreen
+    },
+    LogInContainer: { 
+        screen: LogInContainer 
+    },
+    SignUpContainer: { 
+        screen: SignUpContainer 
+    },
+    
+ }, {
+        initialRouteName: 'MainScreen'
+    }
+);

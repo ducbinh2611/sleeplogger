@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import BlueButton from '../component/BlueButton';
-import firebaseDb from '../firebaseDb';
 import {
 	Text, StyleSheet, TextInput,
 	KeyboardAvoidingView, ImageBackground, View,
 	Dimensions, TouchableOpacity, ActivityIndicator
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import night from '../images/night.png';
 import day from '../images/after_noon.png';
@@ -29,6 +26,10 @@ class LogInContainer extends React.Component {
 		loading: false,
 		passHide: true,
 	};
+
+	componentDidMount() {
+		AsyncStorage.getItem('token').then(token => console.log(token))
+	}
 
 	handleEyeButton = () => {
 		this.setState({
