@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet, Button, Dimensions, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Dimensions, TouchableOpacity, RefreshControl } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import TipPopUp from '../container/TipPopUp';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Entypo';
+import LoadingSign from '../component/LoadingSign';
 import AsyncStorage from '@react-native-community/async-storage';
-let a = 0;
+import GoBackButton from '../component/GoBackButton';
 
 class SavedTipScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
@@ -17,8 +18,10 @@ class SavedTipScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            loading: true,
             list: [],
             message: '',
+            id: null,
             visible: false,
             empty: false,
             refreshing: false,
@@ -31,7 +34,6 @@ class SavedTipScreen extends React.Component {
 
     getTips = () => {
         AsyncStorage.getItem('token').then(token => {
-            //console.warn(token);
             fetch('http://sleep-logger-dev.herokuapp.com/v1/tips', {
                 method: 'GET',
                 headers: {
@@ -42,10 +44,12 @@ class SavedTipScreen extends React.Component {
             }
             )
                 .then((res) => (res.json()))
-                .then(res => this.setState({
-                    list: res
-                }))
-                //.then(() => console.warn(this.state.list))
+                .then(res => {
+                    this.setState({
+                        list: res,
+                        loading: false
+                    })
+                })
                 .catch(err => console.error(err))
         })
     }
@@ -79,14 +83,10 @@ class SavedTipScreen extends React.Component {
     }
 
     uploadMessage = (l) => {
+        console.warn(l.id)
         this.setState({
-            message: l.content
-        })
-    }
-
-    uploadSource = (l) => {
-        this.setState({
-            source: l.subtitle
+            message: l.content,
+            id: l.id
         })
     }
 
@@ -106,33 +106,37 @@ class SavedTipScreen extends React.Component {
     }
 
     truncateString = (message) => {
-        if (message.length > 35) {
-            return message.substring(0, 35) + '...'
+        if (message.length > 40) {
+            return message.substring(0, 40) + '...'
         } else {
             return message
         }
     }
 
-    render() {
-        // const list = [
-        //     {
-        //         name: 'Amy Farhadsahdusihd uiasdhsaiudhsidb hasuydgasyudgsauygdasuydgsayu',
-        //         subtitle: 'National Health Centre'
-        //     },
-        //     {
-        //         name: 'Chris Jackson',
-        //         subtitle: 'National Health Centre'
-        //     },
-        //     // more items
-        // ]
-        return (
+    height = Dimensions.get('window').height
 
-            <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
-                <ScrollView refreshControl={
-                    <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
-                }>
-                    {this.state.list.length === 0 &&
-                        <View style={styles.emptyContainer}>
+    render() {
+
+        return (
+            //[styles.linearGradientContainer, this.state.visible ? {backgroundColor: 'rgba(0,0,0,0.5)'} : '']
+            < LinearGradient style={styles.linearGradientContainer}
+                colors={['#9C51B6', '#5946B2']} >
+                <ScrollView
+                    style={styles.linearGradientContainer}
+                    refreshControl={
+                        <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
+                    }>
+                    
+                    
+
+                    {this.state.loading &&
+                        <View style={[styles.container, { marginTop: this.height/2 - 75}]}>
+                            <LoadingSign />
+                        </View>
+                    }
+
+                    {!this.state.loading && this.state.list.length === 0 &&
+                        <View style={styles.emptyContainer}> 
                             <View style={styles.emptyTextContainer}>
                                 <Text style={styles.emptyText}>
                                     You don't have any saved tips yet
@@ -153,46 +157,42 @@ class SavedTipScreen extends React.Component {
 
                             </View>
 
-                            
+
                         </View>
                     }
 
-                    {!this.state.list.length !== 0 &&
+                    {!this.state.loading && !this.state.list.length !== 0 &&
                         <View style={styles.container}>
-
-
-
                             {
-
                                 this.state.list.map((l) => (
-                                    <View
-                                        style={styles.listContainer}
+                                    // <View
+                                    //     style={styles.listContainer}
 
-                                    >
+                                    // >
                                         <ListItem
                                             key={l.id}
                                             title={this.truncateString(l.content)}
 
                                             onPress={() => {
                                                 this.uploadMessage(l);
-                                                //this.uploadSource(l);
                                                 this.turnOnModal();
                                             }
                                             }
                                             containerStyle={styles.listContainer}
+                                            // [styles.listContainer, this.state.visible ? { backgroundColor: 'rgba(0,0,0,0.5)' } : '']
                                             contentContainerStyle={null}
 
 
                                         >
 
                                         </ListItem>
-                                    </View>
+                                    //</View>
                                 ))
 
 
                             }
 
-                            <TouchableOpacity style={{marginTop: 15, marginBottom: 50,}} onPress={this.handleBackButton}>
+                            <TouchableOpacity style={{ marginTop: 15, marginBottom: 50, }} onPress={this.handleBackButton}>
                                 <Text style={styles.goBackBut}> Go back </Text>
                             </TouchableOpacity>
 
@@ -200,7 +200,10 @@ class SavedTipScreen extends React.Component {
                                 visible={this.state.visible}
                                 onPress={() => { this.setState({ visible: false }) }}
                                 message={this.state.message}
+                                id={this.state.id}
                                 source={this.state.source} />
+
+
                         </View>}
                 </ScrollView>
             </LinearGradient >
@@ -218,10 +221,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    linearGradientContainer: {
+        flex: 1,
+    },
     listContainer: {
         alignSelf: 'center',
-        width: Dimensions.get('window').width - 20,
-        borderRadius: 30,
+        width: Dimensions.get('window').width ,
+        height: 80,
+        borderRadius: 10,
         marginTop: 20,
         marginBottom: 20,
         backgroundColor: 'orange'

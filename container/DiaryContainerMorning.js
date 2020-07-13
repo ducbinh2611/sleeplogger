@@ -154,6 +154,7 @@ class DiaryContainerMorning extends React.Component {
         }
     }
 
+    //function to calculate the sleeping hours to .5
     calcDate = () => {
         const sleptHour = this.state.sleptTime.getHours()
         const wakeUpHour = this.state.wakeUpTime.getHours()
@@ -166,10 +167,12 @@ class DiaryContainerMorning extends React.Component {
             const wakeUpHrs = this.state.wakeUpTime.getHours()
             const wakeUpMins = this.state.wakeUpTime.getMinutes()
             const morningMins = (wakeUpHrs * 60) + wakeUpMins
-            return Math.round((morningMins + (limit - nightMins)) / 60)
+            return Math.round(((morningMins + (limit - nightMins)) / 60) * 2) / 2
         } else {
-            return Math.round(
-                Math.abs(this.state.wakeUpTime.getTime() - this.state.sleptTime.getTime()) / (1000 * 60 * 60))
+            const hourNotRound = Math.abs(this.state.wakeUpTime.getTime() - 
+                                            this.state.sleptTime.getTime()) / (1000 * 60 * 60)
+            const hourRounded = Math.round(hourNotRound * 2) / 2
+            return hourRounded
         }
     }
 
@@ -202,11 +205,12 @@ class DiaryContainerMorning extends React.Component {
 
                 }
                 )
-                    .then((res) => this.reset())
-                    .catch(err => console.error(err))
+                //.then(res => console.warn(this.calcDate()))
+                .then(() => this.reset())
+                .catch(err => console.error(err))
             })
             //.then(res => res.text()).then(res => console.warn('res ' + res))
-            // console.warn('bed time ' + this.state.sleptTime)
+             
             // console.warn('wake up time ' + this.state.wakeUpTime)
             // console.warn('ease of sleep ' + this.state.ease_of_sleep)
         } else {

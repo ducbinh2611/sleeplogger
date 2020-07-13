@@ -1,11 +1,6 @@
 import React from 'react';
 import {
-    LineChart,
     BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
 } from 'react-native-chart-kit';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 
@@ -21,14 +16,15 @@ class BarGraph extends React.Component {
                 <BarChart
                     
                     data={this.props.data}
-                    showBarTops
-                    showValuesOnTopOfBars
+                    showBarTops={true}
+                    showValuesOnTopOfBars={true}
                     width={Dimensions.get('window').width - 20} // from react-native
                     height={220}
                     yAxisInterval={'1'}
                     
                     
                     chartConfig={{
+                        showValuesOnTopOfBars: true,
                         backgroundColor: '#e26a00',
                         backgroundGradientFrom: '#fb8c00',
                         backgroundGradientTo: '#ffa726',
@@ -38,7 +34,7 @@ class BarGraph extends React.Component {
                             borderRadius: 16
                         }
                     }}
-                    bezier
+                    
                     style={{
                         marginVertical: 8,
                         borderRadius: 16
@@ -53,39 +49,10 @@ class BarGraph extends React.Component {
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        //justifyContent: 'center',
-        //alignItems: 'center',
-    },
-    image: {
-        width: 22,
-        height: 22,
-        color: 'white',
-    },
     headerText: {
         alignSelf: 'center', 
         color: 'white',
         fontWeight: 'bold',
-    },
-    statusBar: {
-        marginLeft: 100,
-        marginTop: 15,
-        flexDirection: 'row',
-        borderRadius: 20,
-        width: 100,
-        height: 30,
-        //padding: 10,
-        borderColor: 'black',
-    },
-    content: {
-        marginTop: 50,
-        alignSelf: 'center'
-    },
-    savedTips: {
-        marginTop: 20,
-        color: 'black',
     },
     chart: {
         marginBottom: 20,

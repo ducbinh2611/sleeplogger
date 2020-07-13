@@ -115,6 +115,7 @@ class LogInContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							autoCapitalize={'none'}
 							style={styles.input}
 							placeholder="Email"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}

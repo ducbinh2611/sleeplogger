@@ -5,11 +5,11 @@ import TextButton from '../component/TextButton';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import SubmitButton from '../component/SubmitButton';
 
 class DiaryContainerNight extends React.Component {
     static navigationOptions = {
-        tabBarLabel: <View/>,
+        tabBarLabel: <View />,
         tabBarIcon: ({ tintColor }) => (
             <Icon name='moon' color={tintColor} size={tintColor === 'white' ? 20 : 26} />
         )
@@ -34,6 +34,7 @@ class DiaryContainerNight extends React.Component {
         q5o2: false,
         q6o1: false,
         q6o2: false,
+        submitSuccess: false,
         napMorning: null,
         napAfternoon: null,
         napEvening: null,
@@ -62,6 +63,7 @@ class DiaryContainerNight extends React.Component {
             q5o2: false,
             q6o1: false,
             q6o2: false,
+            submitSuccess: true,
             napMorning: null,
             napAfternoon: null,
             napEvening: null,
@@ -343,43 +345,42 @@ class DiaryContainerNight extends React.Component {
 
 
     handleSubmitButton = () => {
-        AsyncStorage.getItem('token').then(token => {
-            //console.warn(token);
-            fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries', {
-                method: 'POST',
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    "Content-Type": "application/json",
-                    Authorization: 'Bearer ' + token,
-                },
-                body: JSON.stringify({
-                    evening_entry: {
-                        caffeine_morning: this.state.caffeineMorning,
-                        caffeine_afternoon: this.state.caffeineAfternoon,
-                        caffeine_evening: this.state.caffeineEvening,
-                        nap_morning: this.state.napMorning,
-                        nap_afternoon: this.state.napAfternoon,
-                        nap_evening: this.state.napEvening,
-                    }
-
-                })
-
-            }
-            )
-                .then(() => this.reset())
-                .catch(err => console.error(err))
-        })
-        //.then(res => res.text()).then(res => console.warn('res ' + res))
-        // console.warn('bed time ' + this.state.sleptTime)
-        // console.warn('wake up time ' + this.state.wakeUpTime)
-        // console.warn('ease of sleep ' + this.state.ease_of_sleep)
-
-    }
-    render() {
-        //console.warn(this.props.screenProps.rootNavigation.navigate('LogInContainer'))
         const { napMorning, napAfternoon, napEvening,
-            caffeineMorning, caffeineAfternoon, caffeineEvening,
-            q1o1, q1o2, q1o3, q1o4, q2o1, q2o2, q2o3, q2o4,
+            caffeineMorning, caffeineAfternoon, caffeineEvening } = this.state
+        if (napMorning !== null && napAfternoon !== null && napEvening !== null
+            && caffeineMorning !== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
+            AsyncStorage.getItem('token').then(token => {
+                fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries', {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        evening_entry: {
+                            caffeine_morning: this.state.caffeineMorning,
+                            caffeine_afternoon: this.state.caffeineAfternoon,
+                            caffeine_evening: this.state.caffeineEvening,
+                            nap_morning: this.state.napMorning,
+                            nap_afternoon: this.state.napAfternoon,
+                            nap_evening: this.state.napEvening,
+                        }
+
+                    })
+
+                }
+                )
+                    .then(() => this.reset())
+                    .catch(err => console.error(err))
+            })
+        } else {
+            alert("Key in all data first")
+        }
+    }
+
+    render() {
+        const {q1o1, q1o2, q1o3, q1o4, q2o1, q2o2, q2o3, q2o4,
             q3o1, q3o2, q3o3, q3o4, q4o1, q4o2, q5o1, q5o2, q6o1, q6o2 } = this.state
         return (
             <LinearGradient colors={['#9C51B6', '#5946B2']}>
@@ -462,29 +463,14 @@ class DiaryContainerNight extends React.Component {
                         </QuestionText>
 
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity
-                                style={styles.button}
-                                onPress={() => {
-                                    if (napMorning !== null && napAfternoon !== null && napEvening !== null
-                                        && caffeineMorning !== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
-                                        // console.warn('nap morn ' + napMorning);
-                                        // console.warn('nap aft ' + napAfternoon);
-                                        // console.warn('nap even ' + napEvening);
-                                        // console.warn('caf mor ' + caffeineMorning);
-                                        // console.warn('caf aft ' + caffeineAfternoon);
-                                        // console.warn('caf eve ' + caffeineEvening);
-                                        this.handleSubmitButton()
-                                        alert("Submitted successfully")
-                                    } else {
-                                        alert("Key in all data first")
-                                    }
-                                }}
-                            >
-                                <Text style={styles.textInput}>
-                                    Submit
-                        </Text>
-
-                            </TouchableOpacity>
+                            <SubmitButton onPress={this.handleSubmitButton} />
+                            {this.state.submitSuccess &&
+                                <View style={styles.noti}>
+                                    <Text style={styles.notiText}>
+                                        Submit successfully
+                                    </Text>
+                                </View>
+                            }
 
                         </View>
 
@@ -538,6 +524,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
+    noti: {
+        marginTop: 10,
+        marginLeft: 10,
+    },
+    notiText: {
+        fontSize: 16,
+        color:'yellow',
+    }
 })
 
 export default DiaryContainerNight

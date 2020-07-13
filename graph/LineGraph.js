@@ -1,11 +1,6 @@
 import React from 'react';
 import {
   LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
 } from 'react-native-chart-kit';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 
@@ -20,6 +15,7 @@ class LineGraph extends React.Component {
         </Text>
 
         <LineChart
+          fromZero={true}
           yAxisLabel={this.props.yAxisLabel}
           xAxisLabel={this.props.xAxisLabel}
           data={this.props.data}

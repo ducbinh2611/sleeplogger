@@ -13,6 +13,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 
+
 class TipScreen extends React.Component {
     static navigationOptions = {
         tabBarIcon: ({ tintColor }) => (
@@ -24,8 +25,9 @@ class TipScreen extends React.Component {
     }
 
     state = {
-        message: '',
-        source: '',
+        alreadySaved: false,
+        list: [],
+        tipObject: null,
         refreshing: false,
         fetchingData: false,
     }
@@ -44,11 +46,50 @@ class TipScreen extends React.Component {
         })
     }
 
+    //function to get all the saved tip of user
+    getSavedTip = () => {
+        AsyncStorage.getItem('token').then(token => {
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/tips', {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+            }
+            )
+                .then((res) => (res.json()))
+                .then(res => {
+                    this.setState({
+                        list: res,
+
+                    })
+                })
+                .catch(err => console.error(err))
+        })
+    }
+
+    checkSavedTip = (id) => {
+        this.setState({
+            alreadySaved: false
+        })
+        const length = this.state.list.length
+        for (i = 0; i < length; i++) {
+            const obj = this.state.list[i]
+            if (id === obj.id) {
+                this.setState({
+                    alreadySaved: true
+                })
+            }
+        }
+    }
+
     getTip = () => {
         this.setState({
             fetchingData: true,
         })
-        fetch('http://sleep-logger-dev.herokuapp.com/get_tips', {
+        this.getSavedTip()
+        fetch('http://sleep-logger-dev.herokuapp.com/v1/get_tips', {
             method: 'GET',
             headers: {
                 Accept: "application/json, text/plain, */*",
@@ -56,20 +97,22 @@ class TipScreen extends React.Component {
             }
         })
             .then(res => res.json())
+            //.then(res => console.warn(res))
             .then(res => {
 
                 this.setState({
                     fetchingData: !this.state.fetchingData,
-                    message: res.tip.content
+                    tipObject: res
                 })
+                this.checkSavedTip(res.id)
             }
             )
             .catch(err => console.error(err))
     }
 
-    handleSaveButton = () => {
+    saveTip = () => {
         AsyncStorage.getItem('token').then(token => {
-            fetch('http://sleep-logger-dev.herokuapp.com/v1/tips', {
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/save_tip', {
                 method: 'POST',
                 headers: {
                     Accept: "application/json, text/plain, */*",
@@ -77,17 +120,42 @@ class TipScreen extends React.Component {
                     Authorization: 'Bearer ' + token,
                 },
                 body: JSON.stringify({
-                    tip: {
-                        content: this.state.message,
-                    }
+
+                    id: this.state.tipObject.id,
+
                 })
             }
-            )
-                .then(() => alert('Saved tip successfully'))
-                .catch(err => console.error(err))
+            ).catch(err => console.error(err))
         })
     }
-    // refresh tip?
+
+    deleteTip = () => {
+        AsyncStorage.getItem('token').then(token => {
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/remove_tip', {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                    id: this.state.tipObject.id
+                })
+            }
+            ).catch(err => console.error(err))}
+        )
+    }
+
+    handleSaveButton = () => {
+        if (this.state.alreadySaved) {
+            this.deleteTip()
+        } else {
+            this.saveTip()
+        }
+        this.setState({
+            alreadySaved: !this.state.alreadySaved
+        })
+    }
 
     render() {
         return (
@@ -105,7 +173,7 @@ class TipScreen extends React.Component {
                     <View style={styles.tipBox}>
                         {!this.state.fetchingData &&
                             <Text style={styles.textTip}>
-                                {this.state.message}
+                                {this.state.tipObject.content}
                             </Text>
                         }
 
@@ -116,16 +184,31 @@ class TipScreen extends React.Component {
                         <View style={{ marginTop: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
                             <Text style={styles.textSource}>
                                 - {this.state.source} -
-                        </Text>
+                            </Text>
+
 
                             <TouchableOpacity
                                 style={styles.saveButton}
                                 onPress={this.handleSaveButton}
                             >
-                                <Text style={styles.saveButtonText}>
-                                    Find it useful? Save it to your tips bank
-                            </Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Icon name={this.state.alreadySaved ? 'heart' : 'hearto'}
+                                        color={this.state.alreadySaved ? 'red' : 'grey'}
+                                        size={20}
+                                    />
+                                    {!this.state.alreadySaved &&
+                                        <Text style={styles.saveButtonText}>
+                                            Save this tip
+                                        </Text>
+                                    }
+                                    {this.state.alreadySaved &&
+                                        <Text style={styles.saveButtonText}>
+                                            Unsave this tip
+                                        </Text>
+                                    }
+                                </View>
                             </TouchableOpacity>
+
                         </View>
 
                     </View>
@@ -150,8 +233,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         padding: 20,
-        marginTop: 30,
-        marginBottom: 30,
+        marginTop: 20,
+        marginBottom: 20,
     },
     textHeader: {
         fontSize: 30,
@@ -179,8 +262,10 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     saveButtonText: {
-        fontSize: 15,
-        color: '#F3D0EB',
+        marginLeft: 10,
+        color: 'gray',
+        fontSize: 18,
+        
     }
 
 

@@ -2,9 +2,8 @@ import React from 'react';
 import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import ChoiceButton from '../component/ChoiceButton';
 import LinearGradient from 'react-native-linear-gradient';
-import LineGraph from '../graph/LineGraph';
-import BarGraph from '../graph/BarGraph';
-import { NavigationActions, StackActions } from 'react-navigation';
+import DataPage from '../DataPage/DataPage';
+import LoadingSign from '../component/LoadingSign';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const linedata = {
@@ -135,17 +134,38 @@ export default class DataScreen extends React.Component {
   }
 
   state = {
+    isLoading: false,
+    emptyData: false,
     sad: false,
     neutral: false,
     happy: false,
+    sleepData: {},
+    cafAfternoon: {},
+    cafMorning: {},
+    cafEvening: {
+      // labels: [],
+      // datasets: [
+      //   {
+      //     data: [],
+      //     strokeWidth: 2, // optional
+      //   },
+      // ],
+    },
+    napMorning: [],
+    napAfternoon: [],
+    napEvening: [],
   }
 
   handleSadButton = () => {
+    this.setState({
+      isLoading: true,
+    })
     if (this.state.sad) {
       this.setState({
         sad: !this.state.sad
       })
     } else {
+      this.getSleepHour(1)
       this.setState({
         sad: !this.state.sad,
         neutral: false,
@@ -156,11 +176,15 @@ export default class DataScreen extends React.Component {
   }
 
   handleNeutralButton = () => {
+    this.setState({
+      isLoading: true,
+    })
     if (this.state.neutral) {
       this.setState({
         neutral: !this.state.neutral
       })
     } else {
+      this.getSleepHour(2)
       this.setState({
         neutral: !this.state.neutral,
         sad: false,
@@ -171,11 +195,15 @@ export default class DataScreen extends React.Component {
   }
 
   handleHappyButton = () => {
+    this.setState({
+      isLoading: true,
+    })
     if (this.state.happy) {
       this.setState({
         happy: !this.state.happy
       })
     } else {
+      this.getSleepHour(3)
       this.setState({
         happy: !this.state.happy,
         neutral: false,
@@ -185,26 +213,237 @@ export default class DataScreen extends React.Component {
 
   }
 
+  sleepHourComparator = (sleep1, sleep2) => {
+    return sleep1.hours - sleep2.hours
+  }
+
+  sleepHourSort = (array) => {
+    return array.sort(this.sleepHourComparator)
+  }
+
+  sleepDataGen = (array) => {
+    const sleep = {
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          strokeWidth: 2, // optional
+        }
+      ]
+    }
+    for (i = 0; i < array.length; i++) {
+      sleep.labels[i] = array[i].hours
+      sleep.datasets[0].data[i] = array[i].count
+    }
+
+    return sleep
+  }
+
+  cafAfternoonDataGen = (array) => {
+    const data = {
+      labels: ['None', 'Low', 'Medium', 'High'],
+      datasets: [
+        {
+          data: [0, 0, 0, 0],
+          strokeWidth: 2, // optional
+        }
+      ]
+    }
+    for (i = 0; i < array.length; i++) {
+
+      data.datasets[0].data[array[i].caffeine_afternoon] = array[i].count
+    }
+
+    return data
+  }
+
+  cafMorningDataGen = (array) => {
+    const data = {
+      labels: ['None', 'Low', 'Medium', 'High'],
+      datasets: [
+        {
+          data: [0, 0, 0, 0],
+          strokeWidth: 2, // optional
+        }
+      ]
+    }
+    for (i = 0; i < array.length; i++) {
+
+      data.datasets[0].data[array[i].caffeine_morning] = array[i].count
+    }
+
+    return data
+  }
+
+  cafEveningDataGen = (array) => {
+    const data = {
+      labels: ['None', 'Low', 'Medium', 'High'],
+      datasets: [
+        {
+          data: [0, 0, 0, 0],
+          strokeWidth: 2, // optional
+        }
+      ]
+    }
+    for (i = 0; i < array.length; i++) {
+      data.datasets[0].data[array[i].caffeine_evening] = array[i].count
+    }
+    return data
+  }
+
+  napMorningDataGen = (array) => {
+    const data = [
+      {
+        name: "Yes",
+        population: 0,
+        color: "rgba(131, 167, 234, 1)",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+      {
+        name: "No",
+        population: 0,
+        color: "#F00",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+    ]
+    for (i = 0; i < array.length; i++) {
+      if (array[i].nap_morning) {
+        data[0].population = array[i].count
+      } else {
+        data[1].population = array[i].count
+      }
+    }
+    return data
+  }
+
+  napAfternoonDataGen = (array) => {
+    const data = [
+      {
+        name: "Yes",
+        population: 0,
+        color: "rgba(131, 167, 234, 1)",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+      {
+        name: "No",
+        population: 0,
+        color: "#F00",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+    ]
+    for (i = 0; i < array.length; i++) {
+      if (array[i].nap_afternoon) {
+        data[0].population = array[i].count
+      } else {
+        data[1].population = array[i].count
+      }
+    }
+    return data
+  }
+
+  napEveningDataGen = (array) => {
+    const data = [
+      {
+        name: "Yes",
+        population: 0,
+        color: "rgba(131, 167, 234, 1)",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+      {
+        name: "No",
+        population: 0,
+        color: "#F00",
+        legendFontColor: "white",
+        legendFontSize: 15
+      },
+    ]
+    for (i = 0; i < array.length; i++) {
+      if (array[i].nap_evening) {
+        data[0].population = array[i].count
+      } else {
+        data[1].population = array[i].count
+      }
+    }
+    return data
+  }
+
+
+  getSleepHour = (sleepQual) => {
+    AsyncStorage.getItem('token').then(token => {
+      fetch('http://sleep-logger-dev.herokuapp.com/v1/graphing?morning_feeling=' + sleepQual.toString(), {
+        method: 'GET',
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + token,
+        }
+
+      })
+        .then(res => res.json())
+        .then(res => {
+          const dataArray = [res.hours, res.caffeine_morning, res.caffeine_afternoon, res.caffeine_evening,
+                              res.nap_morning, res.nap_afternoon, res.nap_evening]
+          dataArray[0] = this.sleepHourSort(res.hours)
+          console.warn(res)
+          return dataArray
+        })
+        .then(dataArray => {
+          dataArray[0] = this.sleepDataGen(dataArray[0])
+          dataArray[1] = this.cafMorningDataGen(dataArray[1])
+          dataArray[2] = this.cafAfternoonDataGen(dataArray[2])
+          dataArray[3] = this.cafEveningDataGen(dataArray[3])
+          dataArray[4] = this.napMorningDataGen(dataArray[4])
+          dataArray[5] = this.napAfternoonDataGen(dataArray[5])
+          dataArray[6] = this.napEveningDataGen(dataArray[6])
+          return dataArray
+        })
+        .then(res => {
+          if (res[0].labels.length === 0) {
+            this.setState({
+              emptyData: true,
+            })
+          } else {
+            this.setState({
+              emptyData: false,
+              sleepData: res[0],
+              cafMorning: res[1],
+              cafAfternoon: res[2],
+              cafEvening: res[3],
+              napMorning: res[4],
+              napAfternoon: res[5],
+              napEvening: res[6],
+            })
+          }
+          this.setState({
+            isLoading: false,
+          })
+        })
+        .catch(err => console.error(err))
+    })
+  }
+
   handleTipButton = () => {
-    console.warn(this.props.navigation)
     this.props.navigation.navigate('SavedTipScreen')
   }
 
   handleLogOutButton = () => {
     AsyncStorage.removeItem("token")
       .then(res => {
-        // const navigateAction = StackActions.reset({
-        //   index: 0,
-        //   key: null,
-        //   actions: [NavigationActions.navigate({ routeName: 'LogInContainer' })]
-        // })
         console.warn(this.props.navigation.popToTop())
         this.props.navigation.popToTop()
       })
   }
 
   render() {
-    const { sad, neutral, happy } = this.state
+    const { sad, neutral, happy, isLoading, emptyData, sleepData, cafMorning, cafEvening, cafAfternoon,
+            napMorning, napAfternoon, napEvening } = this.state
+    const height = Dimensions.get('window').height
+    const width = Dimensions.get('window').width
     return (
       <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
         <ScrollView>
@@ -227,94 +466,59 @@ export default class DataScreen extends React.Component {
                 active={this.state.happy}> </ChoiceButton>
             </View>
 
-            {
-              sad &&
-              <View style={styles.content}>
-                <LineGraph
-                  xAxisLabel={' hrs'}
-                  graphTitle={'Sleeping hours'}
-                  data={linedata}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Morning Caffeine Intake'}
-                  data={cafSadMorning}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Afternoon Caffeine Intake'}
-                  data={cafSadAfternoon}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Evening Caffeine Intake'}
-                  data={cafSadEvening}
-                />
-
-              </View>
-
-
-            }
-
-            {
-              neutral && <View style={styles.content}>
-                <LineGraph
-                  xAxisLabel={' hrs'}
-                  graphTitle={'Sleeping hours'}
-                  data={sleepNeut}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Morning Caffeine Intake'}
-                  data={cafNeutMorning}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Afternoon Caffeine Intake'}
-                  data={cafNeutAfternoon}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Evening Caffeine Intake'}
-                  data={cafNeutEvening}
-                />
-
+            {(sad || neutral || happy) && isLoading &&
+              <View style={{ position: 'absolute', top: height / 2, left: width / 2 - 20 }}>
+                <LoadingSign />
               </View>
             }
 
-            {
-              happy && <View style={styles.content}>
-                <LineGraph
-                  xAxisLabel={' hrs'}
-                  graphTitle={'Sleeping hours'}
-                  data={sleepHappy}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Morning Caffeine Intake'}
-                  data={cafHappyMorning}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Afternoon Caffeine Intake'}
-                  data={cafHappyAfternoon}
-                />
-
-                <BarGraph
-
-                  graphTitle={'Evening Caffeine Intake'}
-                  data={cafHappyEvening}
-                />
-
+            {(sad || neutral || happy) && !isLoading && emptyData &&
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  Opps! There is no available data
+                </Text>
               </View>
+
+            }
+            {
+              sad && !isLoading && !emptyData &&
+              <DataPage
+                sleepData={sleepData}
+                cafMorning={cafMorning}
+                cafAfternoon={cafAfternoon}
+                cafEvening={cafEvening}
+                napMorning={napMorning}
+                napAfternoon={napAfternoon}
+                napEvening={napEvening}
+              />
+            }
+
+
+
+            {
+              neutral && !isLoading && !emptyData &&
+              <DataPage
+                sleepData={sleepData}
+                cafMorning={cafMorning}
+                cafAfternoon={cafAfternoon}
+                cafEvening={cafEvening}
+                napMorning={napMorning}
+                napAfternoon={napAfternoon}
+                napEvening={napEvening}
+              />
+            }
+
+            {
+              happy && !isLoading && !emptyData &&
+              <DataPage
+                sleepData={sleepData}
+                cafMorning={cafMorning}
+                cafAfternoon={cafAfternoon}
+                cafEvening={cafEvening}
+                napMorning={napMorning}
+                napAfternoon={napAfternoon}
+                napEvening={napEvening}
+              />
             }
 
           </View>
@@ -351,7 +555,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: 100,
     height: 30,
-    //padding: 10,
     borderColor: 'black',
   },
   content: {
@@ -373,6 +576,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     alignSelf: 'center',
+  },
+  emptyContainer: {
+    marginTop: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column'
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'white',
   }
 
 })

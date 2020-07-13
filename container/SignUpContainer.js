@@ -5,7 +5,6 @@ import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackgroun
 import night from '../images/night.png';
 import day from '../images/after_noon.png';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
@@ -127,6 +126,7 @@ class SignUpContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							autoCapitalize={'none'}
 							style={styles.input}
 							placeholder="Email"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}

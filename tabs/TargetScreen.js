@@ -1,8 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { Slider } from 'react-native-elements';
-import { MateirialIcons } from '@expo/vector-icons';
-import { TabNavigator } from 'react-navigation';
 import TimePicker from '../component/TimePicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { notificationManager } from '../Notification/NotificationManager';
@@ -74,9 +72,17 @@ class TargetScreen extends React.Component {
 
                     </TimePicker>
                     
+                    <View style={styles.notiTime}>
+                        <Text style={styles.text}>
+                            Notify me in advance
+                        </Text>
+                    </View>
+
                     <Text style={{ width: 50, textAlign: 'center', left: left, color:'white' }}>
                         {Math.floor(this.state.value)}
                     </Text>
+
+                    
                     <Slider
                         style={{ width: screenWidth - 60, backgroundColor: 'transparent' }}
                         minimumValue={0}
@@ -84,6 +90,16 @@ class TargetScreen extends React.Component {
                         value={this.state.value}
                         onValueChange={(value) => this.setState({ value })}
                     />
+                    
+                    <View style={styles.labelSlider}>
+                        <Text style={styles.leftLabel}>
+                            0 mins
+                        </Text>
+
+                        <Text style={styles.rightLabel}>
+                            120 mins
+                        </Text>
+                    </View>
 
                     <TouchableOpacity style={styles.button}
                         onPress={this.onPressSendNotification}>
@@ -112,13 +128,33 @@ const styles = StyleSheet.create({
         //backgroundColor: 'gray',
         padding: 10,
         width: 200,
-        marginTop: 10,
+        marginTop: 20,
     },
     text: {
         fontSize: 20,
         fontWeight: 'bold',
         color: 'white'
-    }
+    },
+    notiTime: {
+        marginTop: 20,
+        marginBottom: 15,
+    },
+    labelSlider: {
+        flexDirection: 'row',
+        marginTop: 3,
+    },
+    leftLabel: {
+        fontSize:15,
+        color: 'white',
+        position: 'absolute',
+        left: -155,
+    },
+    rightLabel: {
+        fontSize:15,
+        color: 'white',
+        position: 'absolute',
+        left: 100.5,
+    },
 
 })
 

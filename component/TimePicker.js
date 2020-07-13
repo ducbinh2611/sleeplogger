@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+
 class TimePicker extends React.Component {
     constructor(props) {
         super(props)
@@ -51,9 +53,10 @@ class TimePicker extends React.Component {
             <TouchableOpacity 
                 style={styles.button}
                 onPress={this.showPicker}>
-                    <Text style={styles.textInButton}>
+                    {/* <Text style={styles.textInButton}>
                         Select Time
-                    </Text>
+                    </Text> */}
+                    <Icon name={'clock'} size={30} color={'#DAF7A6'}/>
             </TouchableOpacity>
 
             <DateTimePickerModal
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
     },
     button: {
-        marginTop: 5,
+        marginTop: 10,
         padding: 10,
         //backgroundColor: '#6337A6',
         borderRadius: 30,
