@@ -3,6 +3,7 @@ import FirstScreen from './FirstScreen';
 import SecondScreen from './SecondScreen';
 import TargetScreen from './TargetScreen';
 import TipScreen from './TipScreen';
+import DataScreen from './DataScreen'
 import { TabNavigator } from 'react-navigation';
 import moment from 'moment';
 import { View, TouchableOpacity, Alert } from 'react-native';
@@ -12,8 +13,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 var MainScreenStack = TabNavigator({
     Diary: { screen: FirstScreen },
     Target: { screen: TargetScreen },
-    Tip: { screen: TipScreen },
-    Data: { screen: SecondScreen },
+    Tip: { screen: SecondScreen },
+    Data: { screen: DataScreen },
 }, {
     tabBarPosition: 'bottom',
     swipeEnabled: false,
@@ -37,50 +38,7 @@ var MainScreenStack = TabNavigator({
         }
     }
 });
-// const Tab = createBottomTabNavigator();
 
-
-// const MainScreen = () => (
-//     <NavigationContainer>
-//         <Tab.Navigator
-//         initialRouteName="Diary"
-//         tabBarOptions={{
-//             activeTintColor: '#e91e63',
-//         }}
-//         >
-//         <Tab.Screen
-//             name="Diary"
-//             component={FirstScreen}
-//             options={{
-//             tabBarLabel: 'Diary',
-//             tabBarIcon: ({ color, size }) => (
-//                 <Icon name="ios-home" color={color} size={size} />
-//             ),
-//             }}
-//         />
-//         <Tab.Screen
-//             name="Target"
-//             component={TargetScreen}
-//             options={{
-//             tabBarLabel: 'Target',
-//             tabBarIcon: ({ color, size }) => (
-//                 <Icon name="ios-notifications" color={color} size={size} />
-//             ),
-//             }}
-//         />
-//         <Tab.Screen
-//             name="Data"
-//             component={SecondScreen}
-//             options={{
-//             tabBarLabel: 'Data',
-//             tabBarIcon: ({ color, size }) => (
-//                 <Icon name="ios-person" color={color} size={size} />
-//             ),
-//             }}
-//         />
-//         </Tab.Navigator>
-//     </NavigationContainer>
-// );
 const date = moment(new Date()).format('MMMM Do YYYY');
 class MainScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {

@@ -32,7 +32,7 @@ export default class FirstScreen extends React.Component {
     }, {
         tabBarPosition: 'top',
         tabBarOptions: {
-            activeTintColor: '#C67C3F',
+            activeTintColor: '#D4D940',
             //activeBackgroundColor: 'grey',
             inactiveTintColor: 'white',
             // inactiveBackgroundColor: 'green',

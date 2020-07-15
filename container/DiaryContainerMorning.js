@@ -18,7 +18,7 @@ class DiaryContainerMorning extends React.Component {
     static navigationOptions = {
         tabBarLabel: <View />,
         tabBarIcon: ({ tintColor }) => (
-            <Icon name='sun' color={tintColor} size={tintColor === 'white' ? 20 : 26} />
+            <Icon name='sun' color={tintColor} size={tintColor === 'white' ? 20 : 30} />
         )
     }
 

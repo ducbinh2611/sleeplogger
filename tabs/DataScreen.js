@@ -5,132 +5,17 @@ import LinearGradient from 'react-native-linear-gradient';
 import DataPage from '../DataPage/DataPage';
 import LoadingSign from '../component/LoadingSign';
 import AsyncStorage from '@react-native-community/async-storage';
-
-const linedata = {
-  labels: ['3.0', '3.5', '4.5', '5.0', '5.5'],
-  datasets: [
-    {
-      data: [20, 14, 28, 18, 23],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const sleepNeut = {
-  labels: ['5.5', '6.5', '7.0', '7.5', '8.0'],
-  datasets: [
-    {
-      data: [10, 24, 8, 10, 12],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const sleepHappy = {
-  labels: ['6.5', '7.5', '8.0', '8.5', '9.0'],
-  datasets: [
-    {
-      data: [10, 4, 20, 0, 12],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafNeutMorning = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [0, 0, 10, 8],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafNeutAfternoon = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [18, 0, 0, 0],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafNeutEvening = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [10, 0, 8, 0],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafHappyMorning = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [0, 0, 8, 10],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafHappyAfternoon = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [10, 8, 0, 0],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafHappyEvening = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [18, 0, 0, 0],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafSadMorning = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [0, 4, 1, 2],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafSadAfternoon = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [0, 4, 12, 15],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
-
-const cafSadEvening = {
-  labels: ['None', 'Low', 'Medium', 'High'],
-  datasets: [
-    {
-      data: [0, 4, 1, 25],
-      strokeWidth: 2, // optional
-    },
-  ],
-};
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class DataScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: () => null
-    }
+  static navigationOptions = {
+    tabBarLabel: 'Data',
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name='ios-stats' color={tintColor} size={20} />
+    ),
+    headerStyle: {
+      backgroundColor: '#9C51B6'
+    },
   }
 
   state = {
@@ -142,15 +27,7 @@ export default class DataScreen extends React.Component {
     sleepData: {},
     cafAfternoon: {},
     cafMorning: {},
-    cafEvening: {
-      // labels: [],
-      // datasets: [
-      //   {
-      //     data: [],
-      //     strokeWidth: 2, // optional
-      //   },
-      // ],
-    },
+    cafEvening: {},
     napMorning: [],
     napAfternoon: [],
     napEvening: [],
@@ -427,10 +304,6 @@ export default class DataScreen extends React.Component {
     })
   }
 
-  handleTipButton = () => {
-    this.props.navigation.navigate('SavedTipScreen')
-  }
-
   handleLogOutButton = () => {
     AsyncStorage.removeItem("token")
       .then(res => {
@@ -449,10 +322,6 @@ export default class DataScreen extends React.Component {
         <ScrollView>
 
           <View style={styles.container}>
-            <TouchableOpacity onPress={this.handleTipButton}>
-              <Text style={styles.goBackBut}> View your saved tips </Text>
-            </TouchableOpacity>
-
             <Text style={styles.headerText}> View day with wake up feeling of </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
@@ -533,8 +402,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    //justifyContent: 'center',
-    //alignItems: 'center',
   },
   image: {
     width: 22,
@@ -589,30 +456,3 @@ const styles = StyleSheet.create({
   }
 
 })
-
-{/* <View>
-        <Text>
-          Bezier Line Chart
-            </Text>
-        <LineChart
-          data={linedata}
-          width={Dimensions.get('window').width - 20} // from react-native
-          height={220}
-          yAxisLabel={'$'}
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16
-            }
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16
-          }}
-        />
-      </View> */}

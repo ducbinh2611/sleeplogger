@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, Dimensions, TouchableOpacity, RefreshControl } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import TipPopUp from '../container/TipPopUp';
+import TipPopUp from '../component/TipPopUp';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Entypo';
 import LoadingSign from '../component/LoadingSign';
 import AsyncStorage from '@react-native-community/async-storage';
-import GoBackButton from '../component/GoBackButton';
+import TouchableScale from 'react-native-touchable-scale';
 
 class SavedTipScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
@@ -23,8 +23,8 @@ class SavedTipScreen extends React.Component {
             message: '',
             id: null,
             visible: false,
-            empty: false,
             refreshing: false,
+            key: 0,
         }
     }
 
@@ -65,7 +65,7 @@ class SavedTipScreen extends React.Component {
     }
 
     handleBackButton = () => {
-        this.props.navigation.navigate('DataScreen')
+        this.props.navigation.navigate('TipScreen')
     }
 
     turnOffModal = () => {
@@ -83,31 +83,21 @@ class SavedTipScreen extends React.Component {
     }
 
     uploadMessage = (l) => {
-        console.warn(l.id)
         this.setState({
             message: l.content,
-            id: l.id
+            id: l.id,
         })
     }
 
-    checkEmpty = () => {
-        AsyncStorage.getItem('cm').then(token => {
-            console.warn(token)
-            if (token === 'true') {
-                this.setState({
-                    empty: false
-                })
-            } else {
-                this.setState({
-                    empty: true,
-                })
-            }
-        })
+    reRender = () => {
+        console.warn('before ' + this.state.list.length)
+        this.componentWillMount()
+        console.warn('after ' + this.state.list.length)
     }
 
     truncateString = (message) => {
-        if (message.length > 40) {
-            return message.substring(0, 40) + '...'
+        if (message.length > 35) {
+            return message.substring(0, 35) + '...'
         } else {
             return message
         }
@@ -118,7 +108,6 @@ class SavedTipScreen extends React.Component {
     render() {
 
         return (
-            //[styles.linearGradientContainer, this.state.visible ? {backgroundColor: 'rgba(0,0,0,0.5)'} : '']
             < LinearGradient style={styles.linearGradientContainer}
                 colors={['#9C51B6', '#5946B2']} >
                 <ScrollView
@@ -126,17 +115,17 @@ class SavedTipScreen extends React.Component {
                     refreshControl={
                         <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
                     }>
-                    
-                    
+
+
 
                     {this.state.loading &&
-                        <View style={[styles.container, { marginTop: this.height/2 - 75}]}>
+                        <View style={[styles.container, { marginTop: this.height / 2 - 75 }]}>
                             <LoadingSign />
                         </View>
                     }
 
                     {!this.state.loading && this.state.list.length === 0 &&
-                        <View style={styles.emptyContainer}> 
+                        <View style={styles.emptyContainer}>
                             <View style={styles.emptyTextContainer}>
                                 <Text style={styles.emptyText}>
                                     You don't have any saved tips yet
@@ -151,9 +140,11 @@ class SavedTipScreen extends React.Component {
 
                             <View style={styles.buttonContainer}>
 
-                                <Text style={styles.buttonText}>
-                                    Discover more at Tip
-                                </Text>
+                                <TouchableOpacity onPress={this.handleBackButton}>
+                                    <Text style={styles.buttonText}>
+                                        Discover more 
+                                    </Text>
+                                </TouchableOpacity>
 
                             </View>
 
@@ -165,43 +156,45 @@ class SavedTipScreen extends React.Component {
                         <View style={styles.container}>
                             {
                                 this.state.list.map((l) => (
-                                    // <View
-                                    //     style={styles.listContainer}
+                                    <ListItem
+                                        key={l.id}
+                                        title={this.truncateString(l.content)}
 
-                                    // >
-                                        <ListItem
-                                            key={l.id}
-                                            title={this.truncateString(l.content)}
+                                        onPress={() => {
+                                            this.uploadMessage(l);
+                                            this.turnOnModal();
+                                        }}
+                                        containerStyle={styles.firstListContainer}
+                                        contentContainerStyle={null}
+                                        titleStyle={{ color: 'white', fontWeight: 'bold' }}
+                                        Component={TouchableScale}
+                                        friction={90} 
+                                        tension={100} 
+                                        activeScale={0.95}
+                                        ViewComponent={LinearGradient}
+                                        linearGradientProps={{
+                                            colors: ['#FF9800', '#F44336'],
+                                            start: { x: 1, y: 0 },
+                                            end: { x: 0.2, y: 0 },
+                                        }}
+                                        chevron={{ color: 'white' }}
 
-                                            onPress={() => {
-                                                this.uploadMessage(l);
-                                                this.turnOnModal();
-                                            }
-                                            }
-                                            containerStyle={styles.listContainer}
-                                            // [styles.listContainer, this.state.visible ? { backgroundColor: 'rgba(0,0,0,0.5)' } : '']
-                                            contentContainerStyle={null}
+                                    >
 
-
-                                        >
-
-                                        </ListItem>
-                                    //</View>
+                                    </ListItem>
                                 ))
 
 
                             }
-
-                            <TouchableOpacity style={{ marginTop: 15, marginBottom: 50, }} onPress={this.handleBackButton}>
-                                <Text style={styles.goBackBut}> Go back </Text>
-                            </TouchableOpacity>
 
                             <TipPopUp
                                 visible={this.state.visible}
                                 onPress={() => { this.setState({ visible: false }) }}
                                 message={this.state.message}
                                 id={this.state.id}
-                                source={this.state.source} />
+                                source={this.state.source}
+                                onChange={this.reRender}
+                            />
 
 
                         </View>}
@@ -224,12 +217,21 @@ const styles = StyleSheet.create({
     linearGradientContainer: {
         flex: 1,
     },
-    listContainer: {
+    firstListContainer: {
         alignSelf: 'center',
-        width: Dimensions.get('window').width ,
+        width: Dimensions.get('window').width,
         height: 80,
         borderRadius: 10,
         marginTop: 20,
+        marginBottom: 20,
+        backgroundColor: 'orange'
+    },
+    remainingListContainer: {
+        alignSelf: 'center',
+        width: Dimensions.get('window').width,
+        height: 80,
+        borderRadius: 10,
+        marginTop: -20,
         marginBottom: 20,
         backgroundColor: 'orange'
     },
@@ -257,13 +259,16 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     buttonText: {
-        fontSize: 15,
+        fontSize: 20,
         color: 'white',
         fontWeight: 'bold',
     },
     goBackBut: {
         fontSize: 18,
         color: 'white',
+    },
+    text: {
+
     }
 })
 export default SavedTipScreen;

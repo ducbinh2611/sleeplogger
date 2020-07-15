@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import { Slider } from 'react-native-elements';
 import TimePicker from '../component/TimePicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,21 +23,39 @@ class TargetScreen extends React.Component {
     constructor(props) {
         super(props)
         this.localNotify = null,
-            this.state = {
-                targetTime: null,
-                value: 30
-            }
+        this.state = {
+            targetTime: null,
+            value: 30,
+            gif: ''
+        }
     }
 
     componentDidMount() {
         this.localNotify = notificationManager
         this.localNotify.configure()
+        this.gifGenerator()
     }
 
     handleTimePicker = (date) => {
         this.setState({
             targetTime: date
         })
+    }
+
+    gifGenerator = () => {
+        const randomNumber = Math.floor(Math.random() * 10) // generate random int from 0 -> 9
+        if (randomNumber % 5 === 0) {
+            return require('../images/cat_sleep.gif')
+        } else if (randomNumber % 5 === 1) {
+            return require('../images/chibi_sleep.gif')
+        } else if (randomNumber % 5 === 2) {
+            return require('../images/dog_sleep.gif')
+        } else if (randomNumber % 5 === 3) {
+            return require('../images/donald_duck_sleep.gif')
+        } else {
+            return require('../images/time_to_sleep.gif')
+        }
+        
     }
 
     onPressSendNotification = () => {
@@ -105,6 +123,8 @@ class TargetScreen extends React.Component {
                         onPress={this.onPressSendNotification}>
                         <Text style={styles.text}> Remind me </Text>
                     </TouchableOpacity>
+
+                    <Image style={styles.image} source={this.gifGenerator()}/>
                 </View>
             </LinearGradient>
         )
@@ -155,6 +175,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 100.5,
     },
+    image: {
+        height: 100,
+        width: 100,
+    }
 
 })
 

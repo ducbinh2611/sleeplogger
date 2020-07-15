@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React from "react";
 import {
     Modal,
     Alert,
@@ -33,6 +33,11 @@ class TipPopUp extends React.Component {
                     }
                     )
                         .then(() => alert('Deleted tip successfully'))
+                        .then(() => 
+                            {this.props.onChange()
+                             this.props.onPress()
+                            }
+                        )
                         .catch(err => console.error(err))
                 })
             }
@@ -40,24 +45,7 @@ class TipPopUp extends React.Component {
         {text: 'No'}])
         
     }
-    // AsyncStorage.getItem('token').then(token => {
-    //     fetch('http://sleep-logger-dev.herokuapp.com/v1/remove_tip', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: "application/json, text/plain, */*",
-    //             "Content-Type": "application/json",
-    //             Authorization: 'Bearer ' + token,
-    //         },
-    //         body: JSON.stringify({
-
-    //             id: this.props.id,
-
-    //         })
-    //     }
-    //     )
-    //         .then(() => alert('Deleted tip successfully'))
-    //         .catch(err => console.error(err))
-    // })
+    
     render() {
         return (
             <View style={{ opacity: 0.5 }}>
@@ -89,7 +77,9 @@ class TipPopUp extends React.Component {
                                 </View>
 
                                 <View style={{ paddingRight: 15 }}>
-                                    <TouchableOpacity onPress={this.handleDeleteButton}>
+                                    <TouchableOpacity onPress={() => {
+                                        this.handleDeleteButton()
+                                    }}>
                                         <Icon name={'delete'} size={30} />
                                     </TouchableOpacity>
 

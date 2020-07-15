@@ -12,16 +12,14 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
+import SavePopUp from '../component/SavePopUp';
 
 
 class TipScreen extends React.Component {
-    static navigationOptions = {
-        tabBarIcon: ({ tintColor }) => (
-            <Icon name={'like2'} color={tintColor} size={20} />
-        ),
-        headerStyle: {
-            backgroundColor: '#9C51B6'
-        },
+    static navigationOptions = ({ navigation }) => {
+        return {
+            header: () => null
+        }
     }
 
     state = {
@@ -30,6 +28,7 @@ class TipScreen extends React.Component {
         tipObject: null,
         refreshing: false,
         fetchingData: false,
+        modalVisible: false,
     }
 
     componentWillMount() {
@@ -69,6 +68,7 @@ class TipScreen extends React.Component {
         })
     }
 
+    //check whether the fetched tip is already saved
     checkSavedTip = (id) => {
         this.setState({
             alreadySaved: false
@@ -84,6 +84,7 @@ class TipScreen extends React.Component {
         }
     }
 
+    // get a random tip
     getTip = () => {
         this.setState({
             fetchingData: true,
@@ -97,7 +98,6 @@ class TipScreen extends React.Component {
             }
         })
             .then(res => res.json())
-            //.then(res => console.warn(res))
             .then(res => {
 
                 this.setState({
@@ -110,6 +110,7 @@ class TipScreen extends React.Component {
             .catch(err => console.error(err))
     }
 
+    // Save the current tip
     saveTip = () => {
         AsyncStorage.getItem('token').then(token => {
             fetch('http://sleep-logger-dev.herokuapp.com/v1/save_tip', {
@@ -129,6 +130,7 @@ class TipScreen extends React.Component {
         })
     }
 
+    // Delete the current tip from user's saved tips
     deleteTip = () => {
         AsyncStorage.getItem('token').then(token => {
             fetch('http://sleep-logger-dev.herokuapp.com/v1/remove_tip', {
@@ -142,8 +144,13 @@ class TipScreen extends React.Component {
                     id: this.state.tipObject.id
                 })
             }
-            ).catch(err => console.error(err))}
+            ).catch(err => console.error(err))
+        }
         )
+    }
+
+    handleNavigationButton = () => {
+        this.props.navigation.navigate('SavedTipScreen')
     }
 
     handleSaveButton = () => {
@@ -152,9 +159,21 @@ class TipScreen extends React.Component {
         } else {
             this.saveTip()
         }
+        this.showModal()
         this.setState({
             alreadySaved: !this.state.alreadySaved
         })
+    }
+
+    showModal = () => {
+        this.setState({
+            modalVisible: true
+        });
+        setTimeout(() => {
+            this.setState({
+                modalVisible: false
+            })
+        }, 1000);
     }
 
     render() {
@@ -166,7 +185,7 @@ class TipScreen extends React.Component {
                     <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshFunction} />
                 }>
                     <View style={styles.header}>
-                        <Icon name={'aliwangwang-o1'} color={'orange'} size={30} />
+                        <Icon name={'bulb1'} color={'orange'} size={30} />
                         <Text style={styles.textHeader}> Do you know? </Text>
                     </View>
 
@@ -181,37 +200,47 @@ class TipScreen extends React.Component {
                             <ActivityIndicator />
                         }
 
-                        <View style={{ marginTop: 10, flexDirection: 'column', justifyContent: 'flex-end' }}>
-                            <Text style={styles.textSource}>
-                                - {this.state.source} -
-                            </Text>
+                        <View style={{ marginTop: 15, flexDirection: 'column', justifyContent: 'flex-end' }}>
 
 
-                            <TouchableOpacity
-                                style={styles.saveButton}
-                                onPress={this.handleSaveButton}
-                            >
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Icon name={this.state.alreadySaved ? 'heart' : 'hearto'}
-                                        color={this.state.alreadySaved ? 'red' : 'grey'}
-                                        size={20}
-                                    />
-                                    {!this.state.alreadySaved &&
-                                        <Text style={styles.saveButtonText}>
-                                            Save this tip
-                                        </Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <TouchableOpacity
+                                    style={styles.saveButton}
+                                    onPress={this.handleSaveButton}
+                                >
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon name={this.state.alreadySaved ? 'heart' : 'hearto'}
+                                            color={this.state.alreadySaved ? 'red' : 'white'}
+                                            size={30}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={styles.tipBankButton}
+                                    onPress={this.handleNavigationButton}
+                                >
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Icon style={{padding: 10} }name={'bank'} size ={22}/>
+                                        <Text style={{ paddingVertical: 10, fontSize:20 }}> Tip Bank </Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <SavePopUp
+                                    visible={this.state.modalVisible}
+                                    saved={this.state.alreadySaved}
+                                    messageLine1={this.state.alreadySaved ? 'Added to'
+                                        : 'Removed from'
                                     }
-                                    {this.state.alreadySaved &&
-                                        <Text style={styles.saveButtonText}>
-                                            Unsave this tip
-                                        </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
+                                    messageLine2={' Tip Bank'}
+                                />
+                            </View>
 
                         </View>
 
                     </View>
+
+
                 </ScrollView>
             </LinearGradient>
 
@@ -237,19 +266,21 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     textHeader: {
+        marginLeft: 10,
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'blue',
+        color: '#fffdd0',
     },
     tipBox: {
         alignSelf: 'center',
-        backgroundColor: 'purple',
+        backgroundColor: '#272727',
         borderRadius: 10,
         width: Math.round(Dimensions.get('window').width) - 50,
         padding: 30,
+        opacity: 0.90
     },
     textTip: {
-        fontSize: 20,
+        fontSize: 23,
         color: 'white',
     },
     textSource: {
@@ -258,14 +289,18 @@ const styles = StyleSheet.create({
         color: 'gray',
     },
     saveButton: {
-        backgroundColor: 'purple',
+        backgroundColor: '#272727',
         padding: 5,
     },
     saveButtonText: {
         marginLeft: 10,
         color: 'gray',
         fontSize: 18,
-        
+    },
+    tipBankButton: {
+        backgroundColor: '#fffdd0',
+        borderRadius: 10,
+        marginLeft: 100,
     }
 
 
