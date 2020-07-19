@@ -33,6 +33,9 @@ export default class DataScreen extends React.Component {
     napEvening: [],
   }
 
+  // componentDidMount() {
+  //   this.getName()
+  // }
   handleSadButton = () => {
     this.setState({
       isLoading: true,
@@ -264,7 +267,7 @@ export default class DataScreen extends React.Component {
         .then(res => res.json())
         .then(res => {
           const dataArray = [res.hours, res.caffeine_morning, res.caffeine_afternoon, res.caffeine_evening,
-                              res.nap_morning, res.nap_afternoon, res.nap_evening]
+          res.nap_morning, res.nap_afternoon, res.nap_evening]
           dataArray[0] = this.sleepHourSort(res.hours)
           //console.warn(res)
           return dataArray
@@ -304,10 +307,21 @@ export default class DataScreen extends React.Component {
     })
   }
 
-
+  getName = () => {
+    AsyncStorage.getItem('token').then(token => {
+      fetch('http://sleep-logger-dev.herokuapp.com/profile', {
+        method: 'GET',
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + token,
+        },
+      }).then(res => res.json()).then(res => console.warn(res))
+    })
+  }
   render() {
     const { sad, neutral, happy, isLoading, emptyData, sleepData, cafMorning, cafEvening, cafAfternoon,
-            napMorning, napAfternoon, napEvening } = this.state
+      napMorning, napAfternoon, napEvening } = this.state
     const height = Dimensions.get('window').height
     const width = Dimensions.get('window').width
     return (

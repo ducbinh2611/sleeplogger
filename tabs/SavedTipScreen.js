@@ -90,9 +90,7 @@ class SavedTipScreen extends React.Component {
     }
 
     reRender = () => {
-        console.warn('before ' + this.state.list.length)
         this.componentWillMount()
-        console.warn('after ' + this.state.list.length)
     }
 
     truncateString = (message) => {
