@@ -30,6 +30,10 @@ class SignUpContainer extends React.Component {
 		})
 	}
 
+	validateEmail(email) {
+		const re = /\S+@\S+\.\S+/;
+		return re.test(email);
+	}
 
 	handleUpdateName = name => this.setState({ name });
 
@@ -42,53 +46,57 @@ class SignUpContainer extends React.Component {
 	reset = () => {
 		this.setState({
 			name: '',
-				email: '',
-				password: '',
-				password_confirmation: '',
-				isSignUp: true,
+			email: '',
+			password: '',
+			password_confirmation: '',
+			isSignUp: true,
 		})
 	}
-	// handleCreateUser = () => firebaseDb.firestore()
-	// 	.collection('users')
-	// 	.add({
-	// 		name: this.state.name,
-	// 		email: this.state.email,
-	// 		password: this.state.password
-	// 	}).then(() => this.setState({
-	// 		name: '',
-	// 		email: '',
-	// 		password: '',
-	// 		isSignUp: true,
-	// 	})
-	// 	).catch(err => console.error(err));
 
 	handleSubmitButton = () => {
-		if (this.state.password === this.state.password_confirmation) {
-			fetch('http://sleep-logger-dev.herokuapp.com/users', {
-				method: 'POST',
-				headers: {
-					Accept: "application/json, text/plain, */*",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					user: {
-						name: this.state.name,
-						email: this.state.email,
-						password: this.state.password,
-						password_confirmation: this.state.password_confirmation,
-					}
+		const { name, email, password, password_confirmation } = this.state
+		if (this.validateEmail(email)) {
+			if (password === password_confirmation) {
+				fetch('http://sleep-logger-dev.herokuapp.com/users', {
+					method: 'POST',
+					headers: {
+						Accept: "application/json, text/plain, */*",
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						user: {
+							name: name,
+							email: email,
+							password: password,
+							password_confirmation: password_confirmation,
+						}
 
-				})
-
-			}).then(res => res.json())
-			.then(res => {
-				this.reset()
-			})
-			.catch(err => console.error(err))
+					})
+				}).then(res => res.json())
+					.then(res => {
+						this.reset()
+					})
+					.catch(err => console.error(err))
+			} else {
+				alert('Passwords do not match')
+			}
 		} else {
-			alert('Passwords do not match')
+			alert('Input email is not valid')
 		}
+	}
 
+	submitEvent = () => {
+		const { name, email, password, password_confirmation } = this.state
+		if (
+			name.length &&
+			email.length &&
+			password.length &&
+			password_confirmation.length
+		) {
+			this.handleSubmitButton()
+		} else {
+			alert('Please key in all data')
+		}
 	}
 
 	render() {
@@ -116,6 +124,7 @@ class SignUpContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateName}
 							value={name}
+							onSubmitEditing={this.submitEvent}
 						/>
 					</View>
 
@@ -132,6 +141,7 @@ class SignUpContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateEmail}
 							value={email}
+							onSubmitEditing={this.submitEvent}
 						/>
 					</View>
 
@@ -147,6 +157,7 @@ class SignUpContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdatePassword}
 							value={password}
+							onSubmitEditing={this.submitEvent}
 						/>
 
 						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
@@ -166,6 +177,7 @@ class SignUpContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdatePasswordCofm}
 							value={password_confirmation}
+							onSubmitEditing={this.submitEvent}
 						/>
 
 						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
@@ -176,20 +188,7 @@ class SignUpContainer extends React.Component {
 					<View style={{ marginBottom: 15 }}>
 						<TouchableOpacity
 							style={styles.logInButton}
-							onPress={() => {
-								if (
-									name.length &&
-									email.length &&
-									password.length &&
-									password_confirmation.length
-								) {
-									this.handleSubmitButton()
-								} else {
-									alert('Please key in all data')
-								}
-
-							}}
-						//this.handleLogIn
+							onPress={this.submitEvent}
 						>
 							<Text style={styles.logInText}> Sign Up </Text>
 						</TouchableOpacity>

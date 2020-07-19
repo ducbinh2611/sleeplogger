@@ -266,7 +266,7 @@ export default class DataScreen extends React.Component {
           const dataArray = [res.hours, res.caffeine_morning, res.caffeine_afternoon, res.caffeine_evening,
                               res.nap_morning, res.nap_afternoon, res.nap_evening]
           dataArray[0] = this.sleepHourSort(res.hours)
-          console.warn(res)
+          //console.warn(res)
           return dataArray
         })
         .then(dataArray => {
@@ -304,13 +304,6 @@ export default class DataScreen extends React.Component {
     })
   }
 
-  handleLogOutButton = () => {
-    AsyncStorage.removeItem("token")
-      .then(res => {
-        console.warn(this.props.navigation.popToTop())
-        this.props.navigation.popToTop()
-      })
-  }
 
   render() {
     const { sad, neutral, happy, isLoading, emptyData, sleepData, cafMorning, cafEvening, cafAfternoon,
@@ -322,7 +315,7 @@ export default class DataScreen extends React.Component {
         <ScrollView>
 
           <View style={styles.container}>
-            <Text style={styles.headerText}> View day with wake up feeling of </Text>
+            <Text style={styles.headerText}> Wake up feeling  </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
                 onPress={this.handleSadButton}

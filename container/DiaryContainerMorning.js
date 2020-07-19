@@ -35,7 +35,9 @@ class DiaryContainerMorning extends React.Component {
         wakeUpTime: null,
         ease_of_sleep: -1,
         morning_feeling: -1,
+        first_entry: true,
     }
+
 
     reset = () => {
         this.setState({
@@ -169,13 +171,52 @@ class DiaryContainerMorning extends React.Component {
             const morningMins = (wakeUpHrs * 60) + wakeUpMins
             return Math.round(((morningMins + (limit - nightMins)) / 60) * 2) / 2
         } else {
-            const hourNotRound = Math.abs(this.state.wakeUpTime.getTime() - 
-                                            this.state.sleptTime.getTime()) / (1000 * 60 * 60)
+            const hourNotRound = Math.abs(this.state.wakeUpTime.getTime() -
+                this.state.sleptTime.getTime()) / (1000 * 60 * 60)
             const hourRounded = Math.round(hourNotRound * 2) / 2
             return hourRounded
         }
     }
 
+
+    handleEditButton = (id) => {
+        const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
+        if (sleptTime !== null
+            && wakeUpTime !== null
+            && ease_of_sleep !== -1
+            && morning_feeling !== -1) {
+            AsyncStorage.getItem('token').then(token => {
+                fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries/' + id, {
+                    method: 'PATCH',
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        morning_entry: {
+                            bed_time: this.state.sleptTime,
+                            wake_up_time: this.state.wakeUpTime,
+                            ease_of_sleep: this.state.ease_of_sleep,
+                            hours_of_sleep: this.calcDate(),
+                            morning_feeling: this.state.morning_feeling,
+                        }
+                    })
+
+                }
+                )
+                    .then(() => {
+                        this.reset()
+                        this.setState({
+                            first_entry: false
+                        })
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else {
+            alert("Key in all data first")
+        }
+    }
 
     handleSubmitButton = () => {
         const { sleptTime, wakeUpTime, ease_of_sleep, morning_feeling } = this.state
@@ -184,7 +225,6 @@ class DiaryContainerMorning extends React.Component {
             && ease_of_sleep !== -1
             && morning_feeling !== -1) {
             AsyncStorage.getItem('token').then(token => {
-                
                 fetch('http://sleep-logger-dev.herokuapp.com/v1/morning_entries', {
                     method: 'POST',
                     headers: {
@@ -200,22 +240,37 @@ class DiaryContainerMorning extends React.Component {
                             hours_of_sleep: this.calcDate(),
                             morning_feeling: this.state.morning_feeling,
                         }
-
                     })
 
                 }
                 )
-                //.then(res => console.warn(this.calcDate()))
-                .then(() => this.reset())
-                .catch(err => console.error(err))
+                    .then(() => this.reset())
+                    .catch(err => console.error(err))
             })
-            //.then(res => res.text()).then(res => console.warn('res ' + res))
-             
-            // console.warn('wake up time ' + this.state.wakeUpTime)
-            // console.warn('ease of sleep ' + this.state.ease_of_sleep)
         } else {
             alert("Key in all data first")
         }
+    }
+
+    testFunction = () => {
+        AsyncStorage.getItem('token').then(token => {
+            fetch('http://sleep-logger-dev.herokuapp.com/v1/m_entry_by_date?date=' + new Date().toDateString(), {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.length !== 0) {
+                        this.handleEditButton(res[0].id)
+                    } else {
+                        this.handleSubmitButton()
+                    }
+                })
+                .catch(err => console.error(err))
+        })
     }
 
     render() {
@@ -266,13 +321,21 @@ class DiaryContainerMorning extends React.Component {
                         </Question>
 
                         <View style={styles.buttonContainer}>
-                            <SubmitButton onPress={this.handleSubmitButton}/>
-                            {this.state.submitSuccess &&
+                            <SubmitButton onPress={this.testFunction} />
+                            {this.state.submitSuccess && this.state.first_entry &&
                                 <View style={styles.noti}>
                                     <Text style={styles.notiText}>
                                         Submit successfully
                                     </Text>
-                                </View>    
+                                </View>
+                            }
+
+                            {this.state.submitSuccess && !this.state.first_entry &&
+                                <View style={styles.noti}>
+                                    <Text style={styles.notiText}>
+                                        Updated entry successfully
+                                    </Text>
+                                </View>
                             }
                         </View>
 
@@ -295,8 +358,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginTop: 40,
-        marginBottom: 100,
-
+        marginBottom: 150,
     },
     button: {
         alignItems: 'center',
@@ -321,7 +383,7 @@ const styles = StyleSheet.create({
     },
     notiText: {
         fontSize: 16,
-        color:'yellow',
+        color: 'yellow',
     }
 
 })

@@ -27,14 +27,15 @@ class LogInContainer extends React.Component {
 		passHide: true,
 	};
 
-	componentDidMount() {
-		AsyncStorage.getItem('token').then(token => console.log(token))
-	}
-
 	handleEyeButton = () => {
 		this.setState({
 			passHide: !this.state.passHide
 		})
+	}
+
+	validateEmail(email) {
+		const re = /\S+@\S+\.\S+/;
+		return re.test(email);
 	}
 
 	handleUpdateEmail = email => this.setState({ email });
@@ -44,50 +45,53 @@ class LogInContainer extends React.Component {
 	handleLogIn = () => {
 		const { email, password } = this.state;
 		if (email && password) {
-			const req = {
-				'email': email,
-				'password': password,
-			}
-			this.setState({
-				loading: true
-			});
-			fetch('https://sleep-logger-dev.herokuapp.com/authenticate', {
-				method: 'POST',
-				headers: {
-					Accept: "application/json, text/plain, */*",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
+			if (this.validateEmail(email)) {
+				const req = {
+					'email': email,
+					'password': password,
+				}
+				this.setState({
+					loading: true
+				});
+				fetch('https://sleep-logger-dev.herokuapp.com/authenticate', {
+					method: 'POST',
+					headers: {
+						Accept: "application/json, text/plain, */*",
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
 
-					email: this.state.email,
-					password: this.state.password,
+						email: this.state.email,
+						password: this.state.password,
 
 
+					})
 				})
-			})
-			.then(res => res.json())
-				.then(
-					res => {
-						
-						this.setState({
-							loading: false
-						})
-						if (res.token !== undefined) {
-							AsyncStorage.setItem("token", res.token)
-								.then(
-									res => {
-										this.props.navigation.navigate('MainScreen')
-									}
-								).catch(err => console.error(err))
-						} else {
-							alert("Email or password is incorrect")
+					.then(res => {
+						const result = res.json()
+						return result})
+					.then(
+						res => {
+							this.setState({
+								loading: false
+							})
+							if (res.token !== undefined) {
+								AsyncStorage.setItem("token", res.token)
+									.then(
+										res => {
+											this.props.navigation.navigate('MainScreen')
+										}
+									).catch(err => console.error(err))
+							} else {
+								alert("Email or password is incorrect")
+							}
+
+
 						}
-
-
-					}
-
-
-				).catch(err => console.error(err))
+					).catch(err => console.error(err))
+			} else {
+				alert("Invalid email")
+			}
 		} else {
 			alert("Key in email and password")
 		}
@@ -121,6 +125,7 @@ class LogInContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateEmail}
 							value={email}
+							onSubmitEditing={this.handleLogIn}
 						/>
 					</View>
 
@@ -136,6 +141,7 @@ class LogInContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdatePassword}
 							value={password}
+							onSubmitEditing={this.handleLogIn}
 						/>
 
 						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>

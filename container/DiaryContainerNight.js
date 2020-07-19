@@ -70,6 +70,7 @@ class DiaryContainerNight extends React.Component {
             caffeineMorning: -1,
             caffeineAfternoon: -1,
             caffeineEvening: -1,
+            first_entry: true,
         })
     }
 
@@ -343,6 +344,44 @@ class DiaryContainerNight extends React.Component {
         }
     }
 
+    handleEditButton = (id) => {
+        const { napMorning, napAfternoon, napEvening,
+            caffeineMorning, caffeineAfternoon, caffeineEvening } = this.state
+        if (napMorning !== null && napAfternoon !== null && napEvening !== null
+            && caffeineMorning !== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
+            AsyncStorage.getItem('token').then(token => {
+                fetch('http://sleep-logger-dev.herokuapp.com/v1/evening_entries/' + id, {
+                    method: 'PATCH',
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        evening_entry: {
+                            caffeine_morning: this.state.caffeineMorning,
+                            caffeine_afternoon: this.state.caffeineAfternoon,
+                            caffeine_evening: this.state.caffeineEvening,
+                            nap_morning: this.state.napMorning,
+                            nap_afternoon: this.state.napAfternoon,
+                            nap_evening: this.state.napEvening,
+                        }
+                    })
+
+                }
+                )
+                    .then(() => {
+                        this.reset()
+                        this.setState({
+                            first_entry: false
+                        })
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else {
+            alert("Key in all data first")
+        }
+    }
 
     handleSubmitButton = () => {
         const { napMorning, napAfternoon, napEvening,
@@ -366,7 +405,6 @@ class DiaryContainerNight extends React.Component {
                             nap_afternoon: this.state.napAfternoon,
                             nap_evening: this.state.napEvening,
                         }
-
                     })
 
                 }
@@ -379,8 +417,38 @@ class DiaryContainerNight extends React.Component {
         }
     }
 
+    testFunction = () => {
+        const { napMorning, napAfternoon, napEvening,
+            caffeineMorning, caffeineAfternoon, caffeineEvening } = this.state
+        if (napMorning !== null && napAfternoon !== null && napEvening !== null
+            && caffeineMorning !== -1 && caffeineAfternoon !== -1 && caffeineEvening !== -1) {
+            AsyncStorage.getItem('token').then(token => {
+                fetch('http://sleep-logger-dev.herokuapp.com/v1/e_entry_by_date?date=' + new Date().toDateString(), {
+                    method: 'GET',
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer ' + token,
+                    },
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res.length !== 0) {
+                            this.handleEditButton(res[0].id)
+                        } else {
+                            this.handleSubmitButton()
+                        }
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else {
+            alert('Key in all data first')
+        }
+    }
+
+
+
     render() {
-        const {q1o1, q1o2, q1o3, q1o4, q2o1, q2o2, q2o3, q2o4,
+        const { q1o1, q1o2, q1o3, q1o4, q2o1, q2o2, q2o3, q2o4,
             q3o1, q3o2, q3o3, q3o4, q4o1, q4o2, q5o1, q5o2, q6o1, q6o2 } = this.state
         return (
             <LinearGradient colors={['#9C51B6', '#5946B2']}>
@@ -463,8 +531,8 @@ class DiaryContainerNight extends React.Component {
                         </QuestionText>
 
                         <View style={styles.buttonContainer}>
-                            <SubmitButton onPress={this.handleSubmitButton} />
-                            {this.state.submitSuccess &&
+                            <SubmitButton onPress={this.testFunction} />
+                            {this.state.submitSuccess && this.state.first_entry &&
                                 <View style={styles.noti}>
                                     <Text style={styles.notiText}>
                                         Submit successfully
@@ -472,6 +540,13 @@ class DiaryContainerNight extends React.Component {
                                 </View>
                             }
 
+                            {this.state.submitSuccess && !this.state.first_entry &&
+                                <View style={styles.noti}>
+                                    <Text style={styles.notiText}>
+                                        Updated entry successfully
+                                    </Text>
+                                </View>
+                            }
                         </View>
 
                     </View>
@@ -514,8 +589,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginTop: 40,
-        marginBottom: 100,
-
+        marginBottom: 150,
     },
     textInput: {
         marginTop: 5,
@@ -530,7 +604,7 @@ const styles = StyleSheet.create({
     },
     notiText: {
         fontSize: 16,
-        color:'yellow',
+        color: 'yellow',
     }
 })
 

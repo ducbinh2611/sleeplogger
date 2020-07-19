@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { notificationManager } from '../Notification/NotificationManager';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
+import GifImage from '../component/GifImage';
 
 
 class TargetScreen extends React.Component {
@@ -23,11 +24,12 @@ class TargetScreen extends React.Component {
     constructor(props) {
         super(props)
         this.localNotify = null,
-        this.state = {
-            targetTime: null,
-            value: 30,
-            gif: ''
-        }
+            this.state = {
+                targetTime: null,
+                value: 30,
+                gif: null,
+                sliding: false,
+            }
     }
 
     componentDidMount() {
@@ -44,71 +46,102 @@ class TargetScreen extends React.Component {
 
     gifGenerator = () => {
         const randomNumber = Math.floor(Math.random() * 10) // generate random int from 0 -> 9
+
         if (randomNumber % 5 === 0) {
-            return require('../images/cat_sleep.gif')
+            this.setState({
+                gif: require('../images/cat_sleep.gif')
+            })
         } else if (randomNumber % 5 === 1) {
-            return require('../images/chibi_sleep.gif')
+            this.setState({
+                gif: require('../images/chibi_sleep.gif')
+            })
         } else if (randomNumber % 5 === 2) {
-            return require('../images/dog_sleep.gif')
+            this.setState({
+                gif: require('../images/dog_sleep.gif')
+            })
         } else if (randomNumber % 5 === 3) {
-            return require('../images/donald_duck_sleep.gif')
+            this.setState({
+                gif: require('../images/donald_duck_sleep.gif')
+            })
         } else {
-            return require('../images/time_to_sleep.gif')
+            this.setState({
+                gif: require('../images/time_to_sleep.gif')
+            })
         }
-        
     }
 
     onPressSendNotification = () => {
         const { targetTime, value } = this.state
+        const currTime = new Date()
+        const randomNumber = Math.floor(Math.random() * 5);
         if (targetTime !== null) {
             targetTime.setMinutes(targetTime.getMinutes() - value);
             targetTime.setSeconds(0, 0);
-            this.localNotify.scheduleNotification(targetTime)
-            alert("Succesfully schedule")
+            if (targetTime.getTime() >= currTime.getTime()) {
+                this.localNotify.scheduleNotification(targetTime, value, randomNumber)
+                alert("Succesfully schedule")
+            } else {
+                alert("Target time cannot be earlier than current time")
+            }
         } else {
             alert("Specify time first");
         }
     }
-    
+
     render() {
         const screenWidth = Dimensions.get('window').width // width of the screen
-        const left = this.state.value * (screenWidth * 0.65)/100 - 147.5; // 
-
-        
+        const left = this.state.value * (screenWidth * 0.65) / 100 - 147.5;
+        const { targetTime, sliding, value } = this.state
         return (
-            //['#090E2C', '#5220AE']
             <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
                 <View
                     style={styles.container}
                 >
                     <TimePicker
                         style={styles.question}
-                        question={'Tonight I want to go to bed at'}
-                        chosenDate={this.state.targetTime}
+                        question={"Tonight let's sleep at"}
+                        chosenDate={targetTime}
                         onChange={(date) => this.handleTimePicker(date)}
                     >
 
                     </TimePicker>
-                    
+
                     <View style={styles.notiTime}>
                         <Text style={styles.text}>
-                            Notify me in advance
+                            Notify in advance
                         </Text>
                     </View>
 
-                    <Text style={{ width: 50, textAlign: 'center', left: left, color:'white' }}>
-                        {Math.floor(this.state.value)}
-                    </Text>
+                    {sliding &&
+                        <Text style={{ width: 50, textAlign: 'center', left: left, color: 'white' }}>
+                            {Math.floor(value)}
+                        </Text>
+                    }
 
-                    
+                    {!sliding &&
+                        <View style={{ marginTop: 17, }} />
+                    }
+
+
                     <Slider
                         style={{ width: screenWidth - 60, backgroundColor: 'transparent' }}
                         minimumValue={0}
                         maximumValue={120}
-                        value={this.state.value}
-                        onValueChange={(value) => this.setState({ value })}
+                        step={5}
+                        thumbTintColor={'#3FC4E1'}
+                        value={value}
+                        minimumTrackTintColor={'#3FC4E1'}
+                        onValueChange={(value) => {
+                            this.setState({ value, sliding: true })
+                            setTimeout(() => {
+                                this.setState({
+                                    sliding: false
+                                })
+                            }, 1500);
+                        }
+                        }
                     />
-                    
+
                     <View style={styles.labelSlider}>
                         <Text style={styles.leftLabel}>
                             0 mins
@@ -124,7 +157,7 @@ class TargetScreen extends React.Component {
                         <Text style={styles.text}> Remind me </Text>
                     </TouchableOpacity>
 
-                    <Image style={styles.image} source={this.gifGenerator()}/>
+                    <GifImage source={this.state.gif} />
                 </View>
             </LinearGradient>
         )
@@ -164,13 +197,13 @@ const styles = StyleSheet.create({
         marginTop: 3,
     },
     leftLabel: {
-        fontSize:15,
+        fontSize: 15,
         color: 'white',
         position: 'absolute',
         left: -155,
     },
     rightLabel: {
-        fontSize:15,
+        fontSize: 15,
         color: 'white',
         position: 'absolute',
         left: 100.5,

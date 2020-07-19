@@ -1,6 +1,7 @@
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import { Platform } from "react-native";
+import message from './NotificationMessage';
 
 class NotificationManager {
     configure = () => {
@@ -75,16 +76,15 @@ class NotificationManager {
         PushNotification.unregister()
     }
 
-    scheduleNotification = (date) => {
-        const currTime = new Date()
-        if (date.getTime() > currTime.getTime()) {
-            PushNotificationIOS.scheduleLocalNotification({
-                fireDate: date.getTime(),
-                alertTitle: "Sleep Logger",
-                alertBody: "Hi! Starting airing the bedroom, because we are going to sleep in half an hour",
-                alertAction: 'view',
-            })
-        }
+    scheduleNotification = (date, time, randomNumber) => {
+        const notiMessage = message[randomNumber][0] + time + ' minutes ' + message[randomNumber][1]
+        PushNotificationIOS.scheduleLocalNotification({
+            fireDate: date.getTime(),
+            alertTitle: "Sleep Logger",
+            alertBody: notiMessage,
+            alertAction: 'view',
+        })
+
     }
 }
 

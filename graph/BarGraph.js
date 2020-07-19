@@ -14,20 +14,17 @@ class BarGraph extends React.Component {
                 </Text>
 
                 <BarChart
-                    
                     data={this.props.data}
                     showBarTops={true}
                     showValuesOnTopOfBars={true}
                     width={Dimensions.get('window').width - 20} // from react-native
                     height={220}
                     yAxisInterval={'1'}
-                    
-                    
                     chartConfig={{
                         showValuesOnTopOfBars: true,
                         backgroundColor: '#e26a00',
-                        backgroundGradientFrom: '#fb8c00',
-                        backgroundGradientTo: '#ffa726',
+                        backgroundGradientFrom: '#5B7E6C',
+                        backgroundGradientTo: '#71A289',
                         decimalPlaces: 0, // optional, defaults to 2dp
                         color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                         style: {
