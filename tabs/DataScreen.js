@@ -113,11 +113,16 @@ export default class DataScreen extends React.Component {
         }
       ]
     }
+    var skip = 0;
     for (i = 0; i < array.length; i++) {
-      sleep.labels[i] = array[i].hours
-      sleep.datasets[0].data[i] = array[i].count
-    }
 
+      if (typeof array[i].hours === 'number') { 
+        sleep.labels[i - skip] = array[i].hours
+        sleep.datasets[0].data[i - skip] = array[i].count
+      } else {
+        skip += 1
+      }
+    }
     return sleep
   }
 
@@ -310,9 +315,22 @@ export default class DataScreen extends React.Component {
   }
 
   getName = () => {
-    AsyncStorage.getItem('name').then(name => this.setState({name: name}))
+    AsyncStorage.getItem('name').then(name => this.setState({ name: name }))
   }
 
+  getGreeting = () => {
+    const time = new Date()
+    console.log(time.getHours())
+    if (6 < time.getHours()  && time.getHours() < 12) {
+      return 'Good Morning'
+    } else if (time.getHours() < 18) {
+      return 'Good Afternoon'
+    } else if (time.getHours() < 24) {
+      return 'Good Evening'
+    } else {
+      return 'Good Night'
+    }
+  }
   render() {
     const { sad, neutral, happy, isLoading, emptyData, sleepData, cafMorning, cafEvening, cafAfternoon,
       napMorning, napAfternoon, napEvening } = this.state
@@ -323,7 +341,7 @@ export default class DataScreen extends React.Component {
         <ScrollView>
 
           <View style={styles.container}>
-            <Text style={styles.name}> Hello {this.state.name}!</Text>
+            <Text style={styles.name}> {this.getGreeting()} {this.state.name}!</Text>
             <Text style={styles.headerText}> Wake up feeling  </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
@@ -464,5 +482,4 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#ffcc00'
   }
-
 })
