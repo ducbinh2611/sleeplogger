@@ -38,6 +38,9 @@ class DiaryContainerMorning extends React.Component {
         first_entry: true,
     }
 
+    componentDidMount() {
+        this.getName()
+    }
 
     reset = () => {
         this.setState({
@@ -270,6 +273,23 @@ class DiaryContainerMorning extends React.Component {
                     }
                 })
                 .catch(err => console.error(err))
+        })
+    }
+
+    getName = () => {
+        AsyncStorage.getItem('token').then(token => {
+            fetch('http://sleep-logger-dev.herokuapp.com/profile', {
+                method: 'GET',
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json",
+                    Authorization: 'Bearer ' + token,
+                },
+            })
+                .then(res => res.json())
+                .then(res => {
+                    AsyncStorage.setItem('name', res.name)
+                })
         })
     }
 

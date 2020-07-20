@@ -31,11 +31,13 @@ export default class DataScreen extends React.Component {
     napMorning: [],
     napAfternoon: [],
     napEvening: [],
+    name: ''
   }
 
-  // componentDidMount() {
-  //   this.getName()
-  // }
+  componentDidMount() {
+    this.getName()
+  }
+
   handleSadButton = () => {
     this.setState({
       isLoading: true,
@@ -308,17 +310,9 @@ export default class DataScreen extends React.Component {
   }
 
   getName = () => {
-    AsyncStorage.getItem('token').then(token => {
-      fetch('http://sleep-logger-dev.herokuapp.com/profile', {
-        method: 'GET',
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-          Authorization: 'Bearer ' + token,
-        },
-      }).then(res => res.json()).then(res => console.warn(res))
-    })
+    AsyncStorage.getItem('name').then(name => this.setState({name: name}))
   }
+
   render() {
     const { sad, neutral, happy, isLoading, emptyData, sleepData, cafMorning, cafEvening, cafAfternoon,
       napMorning, napAfternoon, napEvening } = this.state
@@ -329,6 +323,7 @@ export default class DataScreen extends React.Component {
         <ScrollView>
 
           <View style={styles.container}>
+            <Text style={styles.name}> Hello {this.state.name}!</Text>
             <Text style={styles.headerText}> Wake up feeling  </Text>
             <View style={styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
@@ -417,7 +412,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: 'white',
-    marginTop: 60,
+    marginTop: 25,
     fontSize: 20,
     fontWeight: 'bold',
     alignSelf: 'center',
@@ -458,8 +453,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 20,
     color: 'white',
+  },
+  name: {
+    marginTop: 15,
+    marginLeft: 20,
+    alignSelf: 'flex-start',
+    fontWeight: 'bold',
+    fontSize: 25,
+    color: '#ffcc00'
   }
 
 })

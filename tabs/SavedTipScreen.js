@@ -43,14 +43,14 @@ class SavedTipScreen extends React.Component {
                 },
             }
             )
-                .then((res) => (res.json()))
-                .then(res => {
-                    this.setState({
-                        list: res,
-                        loading: false
-                    })
+            .then((res) => (res.json()))
+            .then(res => {
+                this.setState({
+                    list: res,
+                    loading: false
                 })
-                .catch(err => console.error(err))
+            })
+            .catch(err => console.error(err))
         })
     }
 
@@ -69,11 +69,9 @@ class SavedTipScreen extends React.Component {
     }
 
     turnOffModal = () => {
-        console.warn('before ' + this.state.visible)
         this.setState = ({
             visible: false,
         })
-        console.warn('turn off here ' + this.state.visible)
     }
 
     turnOnModal = () => {
@@ -106,7 +104,7 @@ class SavedTipScreen extends React.Component {
     render() {
 
         return (
-            < LinearGradient style={styles.linearGradientContainer}
+            <LinearGradient style={styles.linearGradientContainer}
                 colors={['#9C51B6', '#5946B2']} >
                 <ScrollView
                     style={styles.linearGradientContainer}
