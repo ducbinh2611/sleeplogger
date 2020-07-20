@@ -45,7 +45,7 @@ class LogInContainer extends React.Component {
 	handleLogIn = () => {
 		const { email, password } = this.state;
 		if (email && password) {
-			if (this.validateEmail(email)) {
+			//if (this.validateEmail(email)) {
 				const req = {
 					'email': email,
 					'password': password,
@@ -89,9 +89,9 @@ class LogInContainer extends React.Component {
 
 						}
 					).catch(err => console.error(err))
-			} else {
-				alert("Invalid email")
-			}
+			// } else {
+			// 	alert("Invalid email")
+			// }
 		} else {
 			alert("Key in email and password")
 		}
