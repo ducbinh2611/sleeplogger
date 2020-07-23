@@ -320,12 +320,11 @@ export default class DataScreen extends React.Component {
 
   getGreeting = () => {
     const time = new Date()
-    console.log(time.getHours())
     if (6 < time.getHours()  && time.getHours() < 12) {
       return 'Good Morning'
-    } else if (time.getHours() < 18) {
+    } else if (time.getHours() >= 12 && time.getHours() < 18) {
       return 'Good Afternoon'
-    } else if (time.getHours() < 24) {
+    } else if (time.getHours() >= 18 && time.getHours() < 24) {
       return 'Good Evening'
     } else {
       return 'Good Night'
@@ -342,8 +341,8 @@ export default class DataScreen extends React.Component {
 
           <View style={styles.container}>
             <Text style={styles.name}> {this.getGreeting()} {this.state.name}!</Text>
-            <Text style={styles.headerText}> Wake up feeling  </Text>
-            <View style={styles.statusBar}>
+            <Text style={styles.headerText}> Your wake-up feeling  </Text>
+            <View style={width === 414 ? styles.statusBarLarge : styles.statusBar}>
               <ChoiceButton path={require('../images/sad.png')}
                 onPress={this.handleSadButton}
                 active={this.state.sad}> </ChoiceButton>
@@ -437,6 +436,15 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     marginLeft: 100,
+    marginTop: 15,
+    flexDirection: 'row',
+    borderRadius: 20,
+    width: 100,
+    height: 30,
+    borderColor: 'black',
+  },
+  statusBarLarge: {
+    marginLeft: 120,
     marginTop: 15,
     flexDirection: 'row',
     borderRadius: 20,

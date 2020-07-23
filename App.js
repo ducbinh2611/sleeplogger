@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { AppRegistry, View, Image, StyleSheet, TextInput, Button } from 'react-native';
+import { StyleSheet } from 'react-native';
 import SignUpContainer from './container/SignUpContainer';
-import HomeContainer from './container/HomeContainer';
 import LogInContainer from './container/LogInContainer';
 import MainScreen from './tabs/MainScreen';
-import DataScreen from './tabs/DataScreen';
+import EditProfileContainer from './container/EditProfileContainer'
 import { StackNavigator } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -19,18 +18,18 @@ export default class App extends React.Component {
 
     componentWillMount() {
         this.getInitialScreen()
+        console.disableYellowBox = true;
+
     }
 
     getInitialScreen= () => {
         AsyncStorage.getItem('token')
             .then(token => {
                 if (token === null) {
-                    console.log('token null')
                     this.setState({
                         userLogIn: false,
                     })
                 } else {
-                    console.log('token not null')
                     this.setState({
                         userLogIn: true,
                     })
@@ -71,8 +70,12 @@ const UserNotLogIn =  StackNavigator({
     MainScreen: {
         screen: MainScreen
     },
+    EditProfileContainer: {
+        screen: EditProfileContainer
+    }
  }, {
-        initialRouteName: 'LogInContainer'
+        initialRouteName: 'LogInContainer',
+        gesturesEnabled: false,
     }
 );
 
@@ -86,8 +89,11 @@ const UserLogIn =  StackNavigator({
     SignUpContainer: { 
         screen: SignUpContainer 
     },
-    
+    EditProfileContainer: {
+        screen: EditProfileContainer
+    }
  }, {
-        initialRouteName: 'MainScreen'
+        initialRouteName: 'MainScreen',
+        gesturesEnabled: false,
     }
 );

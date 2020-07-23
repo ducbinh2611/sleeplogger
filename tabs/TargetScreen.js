@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Dimensions, Image } from 'react-native';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { Slider } from 'react-native-elements';
 import TimePicker from '../component/TimePicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -73,12 +73,13 @@ class TargetScreen extends React.Component {
     onPressSendNotification = () => {
         const { targetTime, value } = this.state
         const currTime = new Date()
+        const earlyTime = new Date(targetTime)
         const randomNumber = Math.floor(Math.random() * 5);
         if (targetTime !== null) {
-            targetTime.setMinutes(targetTime.getMinutes() - value);
-            targetTime.setSeconds(0, 0);
-            if (targetTime.getTime() >= currTime.getTime()) {
-                this.localNotify.scheduleNotification(targetTime, value, randomNumber)
+            earlyTime.setMinutes(earlyTime.getMinutes() - value);
+            earlyTime.setSeconds(0, 0);
+            if (earlyTime.getTime() >= currTime.getTime()) {
+                this.localNotify.scheduleNotification(earlyTime, value, randomNumber)
                 alert("Succesfully schedule")
             } else {
                 alert("Target time cannot be earlier than current time")
@@ -90,7 +91,8 @@ class TargetScreen extends React.Component {
 
     render() {
         const screenWidth = Dimensions.get('window').width // width of the screen
-        const left = this.state.value * (screenWidth * 0.65) / 100 - 147.5;
+        const left = this.state.value * (screenWidth * 0.65) / 100 - 147.5; // for smaller size iPhone
+        const leftBig = this.state.value * (screenWidth * 0.675) / 100 - 167 // for larget size iPhone
         const { targetTime, sliding, value } = this.state
         return (
             <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
@@ -113,7 +115,9 @@ class TargetScreen extends React.Component {
                     </View>
 
                     {sliding &&
-                        <Text style={{ width: 50, textAlign: 'center', left: left, color: 'white' }}>
+                        <Text style={{ width: 50, textAlign: 'center', 
+                                left: screenWidth === 414 ? leftBig : left,
+                                color: 'white' }}>
                             {Math.floor(value)}
                         </Text>
                     }
@@ -143,11 +147,13 @@ class TargetScreen extends React.Component {
                     />
 
                     <View style={styles.labelSlider}>
-                        <Text style={styles.leftLabel}>
+                        <Text style={screenWidth === 414 ? styles.leftLabelLarge
+                                                         : styles.leftLabel}>
                             0 mins
                         </Text>
 
-                        <Text style={styles.rightLabel}>
+                        <Text style={screenWidth === 414 ? styles.rightLabelLarge
+                                                        : styles.rightLabel}>
                             120 mins
                         </Text>
                     </View>
@@ -202,11 +208,23 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: -155,
     },
+    leftLabelLarge: {
+        fontSize: 15,
+        color: 'white',
+        position: 'absolute',
+        left: -177,
+    },
     rightLabel: {
         fontSize: 15,
         color: 'white',
         position: 'absolute',
         left: 100.5,
+    },
+    rightLabelLarge: {
+        fontSize: 15,
+        color: 'white',
+        position: 'absolute',
+        left: 122.5,
     },
     image: {
         height: 100,

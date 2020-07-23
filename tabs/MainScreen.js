@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import FirstScreen from './FirstScreen';
 import SecondScreen from './SecondScreen';
 import TargetScreen from './TargetScreen';
-import TipScreen from './TipScreen';
 import DataScreen from './DataScreen'
 import { TabNavigator } from 'react-navigation';
 import moment from 'moment';
@@ -44,7 +43,15 @@ class MainScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: moment(new Date()).format('MMMM Do YYYY'),
-            headerLeft: null,
+            headerLeft: (
+                <View style={{marginLeft: 20}}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('EditProfileContainer')} 
+                    >
+                        <Icon name={'user'} color={'white'} size={20}/>
+                    </TouchableOpacity>
+                </View>
+            ),
             headerRight: (
                 <View style={{ marginRight: 20 }}>
                     <TouchableOpacity

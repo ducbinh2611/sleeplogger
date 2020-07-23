@@ -177,8 +177,9 @@ class TipScreen extends React.Component {
     }
 
     render() {
+        const screenWidth = Dimensions.get('window').width
         return (
-
+            
 
             <LinearGradient style={{ flex: 1 }} colors={['#9C51B6', '#5946B2']}>
                 <ScrollView refreshControl={
@@ -217,7 +218,7 @@ class TipScreen extends React.Component {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    style={styles.tipBankButton}
+                                    style={screenWidth === 414 ? styles.tipBankButtonLarge : styles.tipBankButton}
                                     onPress={this.handleNavigationButton}
                                 >
                                     <View style={{ flexDirection: 'row' }}>
@@ -280,7 +281,7 @@ const styles = StyleSheet.create({
         opacity: 0.90
     },
     textTip: {
-        fontSize: 23,
+        fontSize: 21,
         color: 'white',
     },
     textSource: {
@@ -301,6 +302,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fffdd0',
         borderRadius: 10,
         marginLeft: 100,
+    },
+    tipBankButtonLarge: {
+        backgroundColor: '#fffdd0',
+        borderRadius: 10,
+        marginLeft: 140,
     }
 
 

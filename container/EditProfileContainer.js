@@ -5,10 +5,11 @@ import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView, ImageBackgroun
 import night from '../images/night.png';
 import day from '../images/after_noon.png';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
-class SignUpContainer extends React.Component {
+class EditProfileContainer extends React.Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
 			header: () => null
@@ -23,6 +24,19 @@ class SignUpContainer extends React.Component {
 		isSignUp: false,
 		passHide: true,
 	};
+
+	componentDidMount() {
+		AsyncStorage.getItem('name').then(name => {
+			this.setState({
+				name: name
+			})
+		})
+		AsyncStorage.getItem('email').then(email => {
+			this.setState({
+				email: email
+			})
+		})
+	}
 
 	handleEyeButton = () => {
 		this.setState({
@@ -43,71 +57,83 @@ class SignUpContainer extends React.Component {
 
 	handleUpdatePasswordCofm = password_confirmation => this.setState({ password_confirmation });
 
-	reset = () => {
-		this.setState({
-			name: '',
-			email: '',
-			password: '',
-			password_confirmation: '',
-			isSignUp: true,
-		})
-	}
-
 	handleSubmitButton = () => {
 		const { name, email, password, password_confirmation } = this.state
 		if (this.usernameChecker(name)) {
 			if (this.validateEmail(email)) {
 				if (this.passwordChecker()) {
-					if (password === password_confirmation) {
-						fetch('http://sleep-logger-dev.herokuapp.com/users', {
-							method: 'POST',
+					AsyncStorage.getItem('token').then(token => {
+						fetch('http://sleep-logger-dev.herokuapp.com/users/0', {
+							method: 'PATCH',
 							headers: {
 								Accept: "application/json, text/plain, */*",
 								"Content-Type": "application/json",
+								Authorization: 'Bearer ' + token,
 							},
 							body: JSON.stringify({
 								user: {
 									name: name,
 									email: email,
 									password: password,
-									password_confirmation: password_confirmation,
+									password_confirmation: password_confirmation
 								}
 
 							})
-						}).then(res => res.json())
-
-							.then(res => {
-								if (res.error !== undefined) {
-									Alert.alert("Error", "An user with this email is already existed")
-								} else {
-									this.reset()
-								}
+						})
+							.then(() => {
+								this.setState({
+									isSignUp: true
+								})
 							})
 							.catch(err => console.error(err))
-					} else {
-						Alert.alert("Error", 'Passwords do not match')
-					}
+					})
 				}
 			} else {
-				Alert.alert("Invalid email", 'Input email is not valid')
+				Alert.alert('Invalid email', 'Input email is not valid')
 			}
 		} else {
-			Alert.alert("Invalid name", "Name cannot contain special character")
+			Alert.alert('Invalid name', 'Name cannot contain special character')
 		}
 	}
 
-	submitEvent = () => {
-		const { name, email, password, password_confirmation } = this.state
-		if (
-			name.length &&
-			email.length &&
-			password.length &&
-			password_confirmation.length
-		) {
-			this.handleSubmitButton()
+	handleUpdateNoPassword = () => {
+		const { name, email } = this.state
+		if (this.usernameChecker(name)) {
+			if (this.validateEmail(email)) {
+				AsyncStorage.getItem('token').then(token => {
+					fetch('http://sleep-logger-dev.herokuapp.com/users/1', {
+						method: 'PATCH',
+						headers: {
+							Accept: "application/json, text/plain, */*",
+							"Content-Type": "application/json",
+							Authorization: 'Bearer ' + token,
+						},
+						body: JSON.stringify({
+							user: {
+								name: name,
+								email: email,
+							}
+
+						})
+					})
+					.then(res => res.json())	
+					.then((res) => {
+							this.setState({
+								isSignUp: true
+							})
+						})
+						.catch(err => console.error(err))
+				})
+			} else {
+				Alert.alert('Invalid email', 'Input email is not valid')
+			}
 		} else {
-			alert('Please key in all data')
+			Alert.alert('Invalid name', 'Name cannot contain special character')
 		}
+	}
+
+	usernameChecker(str) {
+		return !/[~`!#$%\^&*+=\-\[\]\\';,./{}|\\":<>\?]/g.test(str)
 	}
 
 	passwordChecker = () => {
@@ -134,16 +160,29 @@ class SignUpContainer extends React.Component {
 		}
 	}
 
+	submitEvent = () => {
+		const { name, email, password, password_confirmation } = this.state
+		if (name.length !== 0 && email.length !== 0 &&
+			password.length === 0 && password_confirmation.length === 0) {
+			this.handleUpdateNoPassword()
 
-	usernameChecker(str) {
-		return !/[~`!#$%\^&*+=\-\[\]\\';,./{}|\\":<>\?]/g.test(str)
+		} else if (
+			name.length &&
+			email.length &&
+			password.length &&
+			password_confirmation.length
+		) {
+			this.handleSubmitButton()
+		} else {
+			Alert.alert('Error', 'Please key in all data')
+		}
 	}
 
 	render() {
 		const { navigation } = this.props;
 		const { name, email, password, password_confirmation, isSignUp, passHide } = this.state;
 		return (
-			<ImageBackground source={night} style={styles.container}
+			<ImageBackground source={day} style={styles.container}
 
 			>
 				<KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -193,7 +232,7 @@ class SignUpContainer extends React.Component {
 						<TextInput
 							secureTextEntry={passHide}
 							style={styles.input}
-							placeholder=" Password"
+							placeholder=" New Password (Optional)"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdatePassword}
 							value={password}
@@ -230,23 +269,23 @@ class SignUpContainer extends React.Component {
 							style={styles.logInButton}
 							onPress={this.submitEvent}
 						>
-							<Text style={styles.logInText}> Sign Up </Text>
+							<Text style={styles.logInText}> Edit Profile </Text>
 						</TouchableOpacity>
 					</View>
 
-					<TouchableOpacity onPress={() => navigation.navigate('LogInContainer')}>
+					<TouchableOpacity onPress={() => navigation.goBack()}>
 						<Text style={styles.logInText}>
-							Go back to log in page
+							Go back
 						</Text>
 					</TouchableOpacity>
 
 					<View style={{ marginTop: 20 }}>
 						{
-							isSignUp && <Text style={styles.successfulText}> Sign Up Successfully</Text>
+							isSignUp && <Text style={styles.successfulText}> Edit Successfully </Text>
 						}
 					</View>
 				</KeyboardAvoidingView>
-			</ImageBackground >
+			</ImageBackground>
 
 		);
 	}
@@ -301,24 +340,28 @@ const styles = StyleSheet.create({
 		width: WIDTH - 55,
 		height: 45,
 		borderRadius: 25,
-		backgroundColor: '#432577',
+		backgroundColor: '#00B1D2FF',
+		justifyContent: 'center',
+		marginTop: 20,
+	},
+	changPasswordButton: {
+		width: WIDTH - 55,
+		height: 45,
+		borderRadius: 25,
+		backgroundColor: '#A7A924',
 		justifyContent: 'center',
 		marginTop: 20,
 	},
 	logInText: {
-		color: 'rgba(255,255,255,0.7)',
+		color: 'rgb(139,69,19)',
 		fontSize: 16,
 		textAlign: 'center',
 	},
 	successfulText: {
-		color: 'orange',
+		color: 'purple',
 		fontSize: 20,
 		textAlign: 'center',
-	},
-	passStrengthBar: {
-		marginTop: 15,
-		marginBottom: 15,
 	}
 });
 
-export default SignUpContainer
+export default EditProfileContainer

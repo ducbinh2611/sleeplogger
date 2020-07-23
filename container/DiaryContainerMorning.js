@@ -39,7 +39,7 @@ class DiaryContainerMorning extends React.Component {
     }
 
     componentDidMount() {
-        this.getName()
+        this.getNameAndEmail()
     }
 
     reset = () => {
@@ -276,7 +276,7 @@ class DiaryContainerMorning extends React.Component {
         })
     }
 
-    getName = () => {
+    getNameAndEmail = () => {
         AsyncStorage.getItem('token').then(token => {
             fetch('http://sleep-logger-dev.herokuapp.com/profile', {
                 method: 'GET',
@@ -289,6 +289,7 @@ class DiaryContainerMorning extends React.Component {
                 .then(res => res.json())
                 .then(res => {
                     AsyncStorage.setItem('name', res.name)
+                    AsyncStorage.setItem('email', res.email)
                 })
         })
     }
