@@ -198,12 +198,13 @@ class EditProfileContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							ref='nameInput'
 							style={styles.input}
 							placeholder="Name"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateName}
 							value={name}
-							onSubmitEditing={this.submitEvent}
+							onSubmitEditing={() => this.refs.emailInput.focus()}
 						/>
 					</View>
 
@@ -214,13 +215,14 @@ class EditProfileContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							ref='emailInput'
 							autoCapitalize={'none'}
 							style={styles.input}
 							placeholder="Email"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateEmail}
 							value={email}
-							onSubmitEditing={this.submitEvent}
+							onSubmitEditing={() => this.refs.passwordInput.focus()}
 						/>
 					</View>
 
@@ -230,13 +232,14 @@ class EditProfileContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							ref='passwordInput'
 							secureTextEntry={passHide}
 							style={styles.input}
 							placeholder=" New Password (Optional)"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdatePassword}
 							value={password}
-							onSubmitEditing={this.submitEvent}
+							onSubmitEditing={() => this.refs.passwordConfirmInput.focus()}
 						/>
 
 						<TouchableOpacity style={styles.eye} onPress={this.handleEyeButton}>
@@ -250,6 +253,7 @@ class EditProfileContainer extends React.Component {
 							color={'rgba(255,255,255,0.7)'}
 							style={styles.inputIcon} />
 						<TextInput
+							ref='passwordConfirmInput'
 							secureTextEntry={passHide}
 							style={styles.input}
 							placeholder=" Confirm Password"

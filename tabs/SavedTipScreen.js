@@ -44,7 +44,9 @@ class SavedTipScreen extends React.Component {
             }
             )
             .then((res) => (res.json()))
+            .then(res => this.filterTips(res))
             .then(res => {
+                console.log(res)
                 this.setState({
                     list: res,
                     loading: false
@@ -52,6 +54,22 @@ class SavedTipScreen extends React.Component {
             })
             .catch(err => console.error(err))
         })
+    }
+
+    // function to filter duplicated tips fetched from server
+    filterTips = (response) => {
+        const arr = []
+        const result = []
+        var numOfTip = 0
+        for (i = 0; i < response.length; i++) {
+            const id = response[i].id
+            if (arr[id] === undefined) {
+                arr[id] = 1
+                result[numOfTip] = response[i]
+                numOfTip++
+            }
+        }
+        return result
     }
 
     refreshFunction = () => {

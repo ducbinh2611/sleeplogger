@@ -125,7 +125,7 @@ class LogInContainer extends React.Component {
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
 							onChangeText={this.handleUpdateEmail}
 							value={email}
-							onSubmitEditing={this.handleLogIn}
+							onSubmitEditing={() => this.refs.passwordInput.focus()}
 						/>
 					</View>
 
@@ -137,8 +137,10 @@ class LogInContainer extends React.Component {
 						<TextInput
 							secureTextEntry={passHide}
 							style={styles.input}
+							ref='passwordInput'
 							placeholder=" Password"
 							placeholderTextColor={'rgba(255,255,255,0.7)'}
+							focus={this.state.focusPasswordInput}
 							onChangeText={this.handleUpdatePassword}
 							value={password}
 							onSubmitEditing={this.handleLogIn}
