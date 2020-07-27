@@ -276,7 +276,6 @@ export default class DataScreen extends React.Component {
           const dataArray = [res.hours, res.caffeine_morning, res.caffeine_afternoon, res.caffeine_evening,
           res.nap_morning, res.nap_afternoon, res.nap_evening]
           dataArray[0] = this.sleepHourSort(res.hours)
-          //console.warn(res)
           return dataArray
         })
         .then(dataArray => {

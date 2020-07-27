@@ -44,9 +44,8 @@ class SavedTipScreen extends React.Component {
             }
             )
             .then((res) => (res.json()))
-            .then(res => this.filterTips(res))
+            .then(res =>  this.filterTips(res))
             .then(res => {
-                console.log(res)
                 this.setState({
                     list: res,
                     loading: false

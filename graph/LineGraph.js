@@ -6,6 +6,25 @@ import { View, Text, Dimensions, StyleSheet } from 'react-native';
 
 
 class LineGraph extends React.Component {
+  // function to find the largest data point
+  findLargestData = (data) => {
+    const arr = data.datasets[0].data
+    var largestSoFar = 0
+    for (i = 0; i < arr.length; i++) {
+      if (arr[i] > largestSoFar) {
+        largestSoFar = arr[i]
+      }
+    }
+    return largestSoFar
+  }
+
+  //function to return the number of segment
+  findSegment = (data) => {
+    const largest = this.findLargestData(data)
+    const segmentArr = [1, 1, 2, 3, 4, 5, 3, 7, 4, 3, 5]
+    return segmentArr[largest % 11]
+  }
+
   render() {
     return (
 
@@ -15,6 +34,7 @@ class LineGraph extends React.Component {
         </Text>
 
         <LineChart
+          segments={this.findSegment(this.props.data)}
           fromZero={true}
           yAxisLabel={this.props.yAxisLabel}
           xAxisLabel={this.props.xAxisLabel}
@@ -26,7 +46,7 @@ class LineGraph extends React.Component {
             backgroundColor: '#e26a00',
             backgroundGradientFrom: '#141e30',
             backgroundGradientTo: '#243b55',
-            decimalPlaces: 2, // optional, defaults to 2dp
+            decimalPlaces: 1, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
               borderRadius: 16
