@@ -23,6 +23,7 @@ export default class FirstScreen extends React.Component {
         headerStyle: {
             backgroundColor: '#090E2C'
         },
+        gesturesEnabled: false,
     }
 
     DiaryStack = TabNavigator({

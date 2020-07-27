@@ -163,7 +163,7 @@ class TargetScreen extends React.Component {
                         <Text style={styles.text}> Remind me </Text>
                     </TouchableOpacity>
 
-                    <GifImage source={this.state.gif} />
+                    <GifImage onPress={this.onPressSendNotification} source={this.state.gif} />
                 </View>
             </LinearGradient>
         )

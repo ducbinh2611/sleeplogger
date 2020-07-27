@@ -16,7 +16,8 @@ const url = 'https://sleep-logger-dev.herokuapp.com/authenticate';
 class LogInContainer extends React.Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
-			header: () => null
+			header: () => null,
+			gesturesEnabled: false
 		}
 	}
 

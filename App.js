@@ -12,7 +12,7 @@ export default class App extends React.Component {
         title: "Home",
     }
 
-    state={
+    state = {
         userLogIn: false,
     }
 
@@ -22,7 +22,7 @@ export default class App extends React.Component {
 
     }
 
-    getInitialScreen= () => {
+    getInitialScreen = () => {
         AsyncStorage.getItem('token')
             .then(token => {
                 if (token === null) {
@@ -47,7 +47,7 @@ export default class App extends React.Component {
             return <UserLogIn />
         }
     }
-    
+
 
 }
 
@@ -59,13 +59,13 @@ const styles = StyleSheet.create({
 })
 
 
-const UserNotLogIn =  StackNavigator({
-    
-    LogInContainer: { 
-        screen: LogInContainer 
+const UserNotLogIn = StackNavigator({
+
+    LogInContainer: {
+        screen: LogInContainer
     },
-    SignUpContainer: { 
-        screen: SignUpContainer 
+    SignUpContainer: {
+        screen: SignUpContainer
     },
     MainScreen: {
         screen: MainScreen
@@ -73,27 +73,31 @@ const UserNotLogIn =  StackNavigator({
     EditProfileContainer: {
         screen: EditProfileContainer
     }
- }, {
-        initialRouteName: 'LogInContainer',
-        gesturesEnabled: false,
+}, {
+    initialRouteName: 'LogInContainer',
+    navigationOptions: {
+        gesturesEnabled: false
     }
+}
 );
 
-const UserLogIn =  StackNavigator({
+const UserLogIn = StackNavigator({
     MainScreen: {
         screen: MainScreen
     },
-    LogInContainer: { 
-        screen: LogInContainer 
+    LogInContainer: {
+        screen: LogInContainer
     },
-    SignUpContainer: { 
-        screen: SignUpContainer 
+    SignUpContainer: {
+        screen: SignUpContainer
     },
     EditProfileContainer: {
         screen: EditProfileContainer
     }
- }, {
-        initialRouteName: 'MainScreen',
-        gesturesEnabled: false,
+}, {
+    initialRouteName: 'MainScreen',
+    navigationOptions: {
+        gesturesEnabled: false
     }
+}
 );

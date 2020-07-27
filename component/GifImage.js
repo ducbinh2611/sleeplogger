@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 class GifImage extends React.Component {
     state = {
@@ -29,13 +29,16 @@ class GifImage extends React.Component {
 
     render() {
         return (
-            <Image style={styles.image} source={this.props.source} />
+            <TouchableOpacity onPress={this.props.onPress}>
+                <Image style={styles.image} source={this.props.source} />
+            </TouchableOpacity>
         )
     }
 }
 
 const styles = StyleSheet.create({
     image: {
+        borderRadius: 30,
         height: 100,
         width: 100,
     }
