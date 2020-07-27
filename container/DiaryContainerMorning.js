@@ -73,7 +73,7 @@ class DiaryContainerMorning extends React.Component {
 
     handleButtonQ1 = (value) => {
         this.setState({
-            ease_of_sleep: value
+            ease_of_sleep: value - 1
         })
         const { q1o1, q1o2, q1o3 } = this.state
         if (value === 1) {
@@ -117,7 +117,7 @@ class DiaryContainerMorning extends React.Component {
 
     handleButtonQ2 = (value) => {
         this.setState({
-            morning_feeling: value
+            morning_feeling: value - 1
         })
         const { q2o1, q2o2, q2o3 } = this.state
         if (value === 1) {
@@ -163,7 +163,6 @@ class DiaryContainerMorning extends React.Component {
     calcDate = () => {
         const sleptHour = this.state.sleptTime.getHours()
         const wakeUpHour = this.state.wakeUpTime.getHours()
-        //console.warn('slept hour ' + sleptHour)
         if (sleptHour > 12 && wakeUpHour < 12) {
             const timeInAmPm = sleptHour - 12
             const min = this.state.sleptTime.getMinutes()

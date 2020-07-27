@@ -22,7 +22,11 @@ class LineGraph extends React.Component {
   findSegment = (data) => {
     const largest = this.findLargestData(data)
     const segmentArr = [1, 1, 2, 3, 4, 5, 3, 7, 4, 3, 5]
-    return segmentArr[largest % 11]
+    if (largest <= 10) {
+      return segmentArr[largest % 11]
+    } else {
+      return 4
+    }
   }
 
   render() {

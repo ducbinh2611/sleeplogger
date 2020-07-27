@@ -5,7 +5,7 @@ import {
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 
 class BarGraph extends React.Component {
-    
+
     // function to find the largest data point
     findLargestData = (data) => {
         const arr = data.datasets[0].data
@@ -21,8 +21,12 @@ class BarGraph extends React.Component {
     //function to return the number of segment
     findSegment = (data) => {
         const largest = this.findLargestData(data)
-        const segmentArr = [1,1,2,3,4,5,3,7,4,3,5]
-        return segmentArr[largest % 11]
+        const segmentArr = [1, 1, 2, 3, 4, 5, 3, 7, 4, 3, 5]
+        if (largest <= 10) {
+            return segmentArr[largest % 11]
+        } else {
+            return 4
+        }
     }
 
     render() {
@@ -52,7 +56,7 @@ class BarGraph extends React.Component {
                             borderRadius: 16
                         }
                     }}
-                    
+
                     style={{
                         marginVertical: 8,
                         borderRadius: 16
@@ -68,7 +72,7 @@ class BarGraph extends React.Component {
 
 const styles = StyleSheet.create({
     headerText: {
-        alignSelf: 'center', 
+        alignSelf: 'center',
         color: 'white',
         fontWeight: 'bold',
     },

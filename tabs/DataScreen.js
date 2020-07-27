@@ -47,7 +47,7 @@ export default class DataScreen extends React.Component {
         sad: !this.state.sad
       })
     } else {
-      this.getSleepHour(1)
+      this.getSleepHour(0)
       this.setState({
         sad: !this.state.sad,
         neutral: false,
@@ -66,7 +66,7 @@ export default class DataScreen extends React.Component {
         neutral: !this.state.neutral
       })
     } else {
-      this.getSleepHour(2)
+      this.getSleepHour(1)
       this.setState({
         neutral: !this.state.neutral,
         sad: false,
@@ -85,7 +85,7 @@ export default class DataScreen extends React.Component {
         happy: !this.state.happy
       })
     } else {
-      this.getSleepHour(3)
+      this.getSleepHour(2)
       this.setState({
         happy: !this.state.happy,
         neutral: false,
