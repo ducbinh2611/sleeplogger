@@ -17,4 +17,8 @@ If you want to try out the app:
 5. Run the project in Xcode
 * If you the build is unsuccessful with the error message “Multiple commands produce”, try Xcode -> File -> Workspace Settings -> Build System -> Legacy Build System
 
+Test account: 
+email: test1@gmail.com 
+password: Abcd1234
+
 Feel free to approach us if you have any feedback/question or you find any error/bug at ducbinh2611@gmail.com or hosibinh120899@gmail.com
