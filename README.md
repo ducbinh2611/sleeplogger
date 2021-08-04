@@ -10,12 +10,14 @@ a better understanding of YOUR OWN sleep style and insights on how your habits a
 healthy sleeping tip from trustworthy source so that you can pick them up and integrate into your lifestyle.
 
 If you want to try out the app:
-1. Clone the git repository. Download and install Xcode from App Store.
-2. Using Terminal, navigate to the clone folder -> ios, then run pod install
-3. Navigate back to the project folder, run npm install, followed by npm start
-4. Open ios folder, run the file ReactNativeStormpath.xcworkspace (This should open a Xcode window)
-5. Run the project in Xcode
-* If you the build is unsuccessful with the error message “Multiple commands produce”, try Xcode -> File -> Workspace Settings -> Build System -> Legacy Build System
+1. Download and install Xcode from App Store.
+2. Clone the git repository. 
+3. Using Terminal, change current work directory to `clone_folder/ios`.
+4. Run `pod install`.
+5. Navigate back to `clone_folder`, run `npm install`, followed by `npm start`.
+6. Navifate to `ios` folder, run `ReactNativeStormpath.xcworkspace` (This should open a Xcode window).
+7. Run the project in Xcode
+* If the build is unsuccessful with the error message `Multiple commands produce`, try the following: Xcode -> File -> Workspace Settings -> Build System -> Legacy Build System
 
 Test account:\
 email: test1@gmail.com\
